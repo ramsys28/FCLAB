@@ -6,6 +6,6 @@ end;
 
 
 
-uimenu( fig, 'label', '[My function]', 'callback', ... [ 'EEG = pop_[myfunc](EEG, ...); [ALLEEG EEG CURRENTSET] ... = eeg_store(ALLEEG, EEG, CURRENTSET);' ]);
+uimenu( fig, 'label', 'Compute Functional Connectivity', 'callback', [ 'EEG = pop_fclab(EEG); [ALLEEG EEG CURRENTSET] = eeg_store(ALLEEG, EEG, CURRENTSET);' ]);
     
 return;
