@@ -31,7 +31,7 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-function [EEG, com] = pop_fclab( EEG, typeproc, param3 );
+function [EEG, com] = pop_fclab( EEG, typeproc);
 
 % the command output is a hidden output that does not have to
 % be described in the header
@@ -41,7 +41,7 @@ com = ''; % this initialization ensure that the function will return something
 
 % display help if not enough arguments
 % ------------------------------------
-if nargin < 2
+if nargin < 1
 	help pop_sample;
     typeproc=1;
 	return;
@@ -60,10 +60,11 @@ end;
 
 if nargin < 3
     g = [1 1];
-    geometry = { g [1 1 1] [g 1] [g 1] [g 1] [g 1] [g 1] [g 1] [g 1] [g 1] [g 1] };
+    geometry = { [g 1] [1 1 1] [g 1] [g 1] [g 1] [g 1] [g 1] [g 1] [g 1] [g 1] [g 1] };
     uilist = { ...
       { 'Style', 'text', 'string', 'Choose Metric', 'fontweight', 'bold' } ...
-      { 'Style', 'popupmenu', 'string', metrics 'tag' 'metric' 'Callback', @popupCallback} ...
+      { 'Style', 'popupmenu', 'string', metrics 'tag' 'metric' 'Callback', @popupCallback_drp}...
+      { 'Style', 'checkbox', 'string' 'All' 'value' 0 'tag' 'metric_all' 'Callback', @popupCallback_all} ...
       { 'Style', 'text', 'string', 'Brainwaves', 'fontweight', 'bold'  }...
       { 'Style', 'text', 'string', 'Frequncy [low high]', 'fontweight', 'bold'  }...
       { 'Style', 'text', 'string', 'Name (delta, theta)', 'fontweight', 'bold'  }...
@@ -105,10 +106,10 @@ end;
 % call function sample either on raw data or ICA data
 % ---------------------------------------------------
 if typeproc == 1
-    handle = findobj('Tag', 'metric');
-    if(handle.Value==1)
-        disp('asdas')
-    end
+    %handle = findobj('Tag', 'metric');
+    %if(handle.Value==1)
+    %    disp('asdas')
+    %end
 	%sample( EEG.data );
     
 else
@@ -129,14 +130,22 @@ com = sprintf('pop_sample( %s, %d, [%s] );', inputname(1), typeproc );
 
 return;
 
-     % callback for the drop-down menu
-     function popupCallback(obj,event)
-         dropdown=findobj('Tag', 'metric');
-         
-         if dropdown.Value==1
-             handle = findobj('Tag', 'frb9');
-             handle.Visible=false;
-         end
+% callback for the drop-down menu
+function popupCallback_drp(obj,event)
+    if obj.Value==1
+         handle = findobj('Tag', 'frb9');
+         handle.Visible='off';
+    end
+return;
+
+function popupCallback_all(obj,event)
    
-         
-     return;
+
+    if obj.Value==1
+         handle = findobj('Tag', 'metric');
+         set(handle,'Visible','Off')
+    else
+        handle = findobj('Tag', 'metric');
+        set(handle,'Visible','On')
+    end
+return;
