@@ -31,7 +31,7 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-function [EEG, com] = pop_fclab( EEG );
+function [EEG, com] = pop_fclab( EEG, typeproc );
 
 % the command output is a hidden output that does not have to
 % be described in the header
@@ -39,12 +39,8 @@ function [EEG, com] = pop_fclab( EEG );
 com = ''; % this initialization ensure that the function will return something
           % if the user press the cancel button            
 
-% display help if not enough arguments
-% ------------------------------------
-if nargin < 1
-    typeproc=1;
-end;	
 
+typeproc=1;
 % pop up window
 % -------------
 
@@ -106,9 +102,11 @@ if structout.metric==1
     param.metric='cor';
 end;
 
+[EEG, com] = fclab(EEG,param);
+
 % return the string command
 % -------------------------
-com = sprintf('fclab( %s, %s );', 'EEG', 'param' );
+com = sprintf('pop_fclab( %s, %d );', inputname(1), typeproc);
 
 
 

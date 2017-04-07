@@ -37,9 +37,13 @@ if nargin < 1
 	return;
 end;
 outEEG=inEEG;
+[m,n,o]=size(inEEG.data)
 if strcmp(params.metric,'cor');
-    if 
-    outEEG.FC.correlation.adj_matrix=corrcoef(inEEG.data');
+    if o==1
+        outEEG.FC.correlation.adj_matrix=corrcoef(inEEG.data');
+    else
+        outEEG.FC.correlation.adj_matrix=corrcoef(mean(inEEG.data,3)');
+    end
 end;
 
 com = sprintf('fclab( %s, %s );', inputname(1), 'params');
