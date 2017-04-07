@@ -4,8 +4,15 @@ if nargin < 3
     error('eegplugin_fclab requires 3 arguments');
 end;
 
+menu = findobj(fig, 'tag', 'tools');
 
+comfc = [try_strings.no_check 'EEG = pop_fclab(EEG); [ALLEEG EEG CURRENTSET] = eeg_store(ALLEEG, EEG, CURRENTSET);' catch_strings.new_and_hist];
+vizfc = [try_strings.check_chanlocs 'EEG = pop_fclab(EEG); [ALLEEG EEG CURRENTSET] = eeg_store(ALLEEG, EEG, CURRENTSET);' catch_strings.new_and_hist];
+netstats = [try_strings.check_chanlocs 'EEG = pop_fclab(EEG); [ALLEEG EEG CURRENTSET] = eeg_store(ALLEEG, EEG, CURRENTSET);' catch_strings.new_and_hist];
+submenu = uimenu( menu, 'Label', 'FCLAB', 'separator', 'on');
 
-uimenu( fig, 'label', 'Compute Functional Connectivity', 'callback', [ 'EEG = pop_fclab(EEG); [ALLEEG EEG CURRENTSET] = eeg_store(ALLEEG, EEG, CURRENTSET);' ]);
-    
+uimenu( submenu, 'label', 'Compute Functional Connectivity', 'callback',comfc );
+uimenu( submenu, 'label', 'Visualize Functional Connectivity', 'callback', vizfc,'userdata','chanloc:off');
+uimenu( submenu, 'label', 'Network Statistics', 'callback',netstats,'userdata','study:on');
+ 
 return;

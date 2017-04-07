@@ -1,0 +1,17 @@
+function vers = eegplugin_fclab(fig, try_strings, catch_strings)
+vers = 'FCLAB v1.0';
+if nargin < 3
+    error('eegplugin_fclab requires 3 arguments');
+end;
+
+
+menu = findobj(fig, 'tag', 'tools');
+
+comfc = [trystrs.no_check 'EEG = pop_fclab(EEG); [ALLEEG EEG CURRENTSET] = eeg_store(ALLEEG, EEG, CURRENTSET);' catchstrs.new_and_hist];
+vizfc = [trystrs.no_check 'EEG = pop_fclab(EEG); [ALLEEG EEG CURRENTSET] = eeg_store(ALLEEG, EEG, CURRENTSET);' catchstrs.new_and_hist];
+submenu = uimenu( menu, 'Label', 'FCLAB', 'separator', 'on');
+uimenu( submenu, 'label', 'Compute Functional Connectivity', 'callback',comfc );
+uimenu( submenu, 'label', 'Visualize Functional Connectivity', 'callback', [ 'EEG = pop_fclab(EEG); [ALLEEG EEG CURRENTSET] = eeg_store(ALLEEG, EEG, CURRENTSET);' ],'userdata','chanloc:on');
+uimenu( submenu, 'label', 'Network Statistics', 'callback','EEG = pop_fclab(EEG); [ALLEEG EEG CURRENTSET] = eeg_store(ALLEEG, EEG, CURRENTSET);','userdata','study:on');
+ 
+return;
