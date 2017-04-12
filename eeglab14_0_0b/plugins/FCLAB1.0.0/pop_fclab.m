@@ -97,7 +97,8 @@ if nargin < 3
  
       [ tmp1 tmp2 strhalt structout ] = inputgui(geometry, uilist, ...
            'pophelp(''pop_fclab'');', 'Functional Connectivity Lab');
-
+else
+    error('Too many inputs');
 end;
 
 switch structout.metric
@@ -116,7 +117,7 @@ k=1;
 if prod([isempty(structout.frb1),isempty(structout.frb2),isempty(structout.frb3),...
         isempty(structout.frb4),isempty(structout.frb5),isempty(structout.frb6),...
          isempty(structout.frb7),isempty(structout.frb8),isempty(structout.frb9)])
-    param.spectrum='all';
+    error('Please fill a specific bandwidth or click to Auto Complete');
 else
     for i=4:2:20
         if ~isempty(getfield(structout,fields{i}))
@@ -164,17 +165,6 @@ function popupCallback_all(obj,event)
     end
 return;
 
-function popupCallback_graph(obj,event)
-   
-
-    if obj.Value==1
-         handle = findobj('Tag', 'metric');
-         set(handle,'Visible','Off')
-    else
-        handle = findobj('Tag', 'metric');
-        set(handle,'Visible','On')
-    end
-return;
 
 function popupCallback_autocmpl(obj,event)
     if obj.Value==1
@@ -190,6 +180,8 @@ function popupCallback_autocmpl(obj,event)
          set(findobj('Tag', 'frb5_name'),'String','Beta')
          set(findobj('Tag', 'frb6'),'String','[30 45]')
          set(findobj('Tag', 'frb6_name'),'String','Gamma')
+         set(findobj('Tag', 'frb7'),'String','[0.5 45]')
+         set(findobj('Tag', 'frb7_name'),'String','All Spectrum')
     else
          set(findobj('Tag', 'frb1'),'String',' ')
          set(findobj('Tag', 'frb1_name'),'String',' ')
@@ -203,5 +195,7 @@ function popupCallback_autocmpl(obj,event)
          set(findobj('Tag', 'frb5_name'),'String',' ')
          set(findobj('Tag', 'frb6'),'String',' ')
          set(findobj('Tag', 'frb6_name'),'String',' ')
+         set(findobj('Tag', 'frb7'),'String',' ')
+         set(findobj('Tag', 'frb7_name'),'String',' ')
     end
 return;

@@ -22,7 +22,7 @@ function varargout = pop_fcvisual(varargin)
 
 % Edit the above text to modify the response to help pop_fcvisual
 
-% Last Modified by GUIDE v2.5 12-Apr-2017 00:56:12   
+% Last Modified by GUIDE v2.5 12-Apr-2017 22:32:22
           
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -43,6 +43,7 @@ else
 end
 % End initialization code - DO NOT EDIT
 
+
 % --- Executes just before pop_fcvisual is made visible.
 function pop_fcvisual_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
@@ -51,15 +52,26 @@ function pop_fcvisual_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to pop_fcvisual (see VARARGIN)
 
+a=varargin{1};
 % Choose default command line output for pop_fcvisual
 handles.output = hObject;
+handles.popupmenu2.String=a.FC.parameters.bands(:,2);
 
+axes(handles.axes1);
+imagesc(double(a.FC.Correlation.Delta.adj_matrix)); colormap(jet); colorbar;
+chan_labels= {a.chanlocs.labels}.';
+set(handles.axes1, 'XTick', 1:5:a.nbchan, 'XTickLabel', chan_labels(1:5:a.nbchan));
+set(handles.axes1, 'YTick', 1:5:a.nbchan, 'YTickLabel', chan_labels(1:5:a.nbchan));
 % Update handles structure
 guidata(hObject, handles);
 
-G = evalin('base', 'EEG.FC.correlation.adj_matrix');
-axes(handles.axes1);
-imagesc(double(G)); colormap(jet); colorbar;
+
+
+
+
+%G = evalin('base', 'EEG.FC.Correlation.adj_matrix');
+%axes(handles.axes1);
+%imagesc(double(G)); colormap(jet); colorbar;
 
 % UIWAIT makes pop_fcvisual wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -147,3 +159,41 @@ function popupmenu1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on selection change in popupmenu2.
+function popupmenu2_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu2 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu2
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+
+%set(hObject,'String',fieldnames(varargin))
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+    
+end
+
+
+% --- Executes on mouse press over axes background.
+function axes1_ButtonDownFcn(hObject, eventdata, handles,varargin)
+% hObject    handle to axes1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+disp(test)
+band=handles.popupmenu2.Value
+figure('units','normalized','outerposition',[0 0 1 1])
+a=varargin{1};
+eval(['imagesc(double(a.FC.Correlation.' band '.adj_matrix)); colormap(jet); colorbar;']);
