@@ -141,7 +141,6 @@ end
 outEEG = inEEG;
 [m, n, o] = size(inEEG.data);
 if strcmp(params.metric, 'cor');
-<<<<<<< HEAD
     if isempty(params.bands) % whole signal
         if (o == 1)
             temp_adj = corrcoef(inEEG.data');
