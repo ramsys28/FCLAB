@@ -40,36 +40,74 @@ end
 outEEG = inEEG;
 [m, n, o] = size(inEEG.data);
 if strcmp(params.metric, 'cor');
-    if isempty(params.bands)
+    if isempty(params.bands) % whole signal
         if (o == 1)
             temp_adj = corrcoef(inEEG.data');
         else
             temp_adj = corrcoef(mean(inEEG.data,3)'); % events data
         end
-        outEEG.FC.Correlation.adj_matrix=temp_adj;
+        outEEG.FC.Correlation.adj_matrix.all_freq=temp_adj;
         if params.graph==1
             L = weight_conversion(temp_adj, 'lengths'); %connection-length matrix
             D = distance_wei(L); %distance matrix
             %local measures
-            outEEG.FC.Correlation.local.BC = betweenness_wei(L)./((n-1)*(n-2));
-            outEEG.FC.Correlation.local.DEG = degrees_und(temp_adj)./(n-1);
-            [~, ~, outEEG.FC.Correlation.local.ECC, ~, ~] = charpath(D);
-            outEEG.FC.Correlation.local.clustcoef = clustering_coef_wu(temp_adj);
-            outEEG.FC.Correlation.local.Elocal = efficiency_wei(temp_adj, 1); %or 2 for modified version
-            outEEG.FC.Correlation.local.EC = eigenvector_centrality_und(temp_adj);
+            outEEG.FC.Correlation.all_freq.local.BC = betweenness_wei(L)./((n-1)*(n-2));
+            outEEG.FC.Correlation.all_freq.local.DEG = degrees_und(temp_adj)./(n-1);
+            [~, ~, outEEG.FC.Correlation.all_freq.local.ECC, ~, ~] = charpath(D);
+            outEEG.FC.Correlation.all_freq.local.clustcoef = clustering_coef_wu(temp_adj);
+            outEEG.FC.Correlation.all_freq.local.Elocal = efficiency_wei(temp_adj, 1); %or 2 for modified version
+            outEEG.FC.Correlation.all_freq.local.EC = eigenvector_centrality_und(temp_adj);
 
             %global measures
-            [~, ~, ~, ~, outEEG.FC.Correlation.global.diam] = charpath(D);
-            [~, ~, ~, outEEG.FC.Correlation.global.rad, ~] = charpath(D);
-            outEEG.FC.Correlation.global.LN = leafNodes(temp_adj);
-            [outEEG.FC.Correlation.global.lambda, ~, ~, ~, ~] = charpath(D);
+            [~, ~, ~, ~, outEEG.FC.Correlation.all_freq.global.diam] = charpath(D);
+            [~, ~, ~, outEEG.FC.Correlation.all_freq.global.rad, ~] = charpath(D);
+            outEEG.FC.Correlation.all_freq.global.LN = leafNodes(temp_adj);
+            [outEEG.FC.Correlation.all_freq.global.lambda, ~, ~, ~, ~] = charpath(D);
             %outEEG.FC.Correlation.global.DEGcor = pearson(temp_adj); %CHECK
             %THIS --> this is fot weighted
-            outEEG.FC.Correlation.global.Eglobal = efficiency_wei(temp_adj, 0);
+            outEEG.FC.Correlation.all_freq.global.Eglobal = efficiency_wei(temp_adj, 0);
         end;
-    else
-        
-        
+    else % frequency bands
+        [mf nf] = size(params.bands);
+        for i = 1:mf
+            testEEG=EEG;
+            freq_range=str2num(params.bands{i,1};)
+            [testEEG, com, b] = pop_eegfiltnew(testEEG, freq_range(1));
+            [testEEG, com, b] = pop_eegfiltnew(testEEG, [],freq_range(2));
+            
+            if (o == 1)
+                temp_adj = corrcoef(testEEG.data');
+            else
+                temp_adj = corrcoef(mean(testEEG.data,3)'); % events data
+            end
+            eval(['outEEG.FC.Correlation.adj_matrix.' params.bands{i,2} '=temp_adj']);
+            
+            if params.graph==1
+                L = weight_conversion(temp_adj, 'lengths'); %connection-length matrix
+                D = distance_wei(L); %distance matrix
+                %local measures
+                eval(['outEEG.FC.Correlation.'  params.bands{i,2} '.local.BC = betweenness_wei(L)./((n-1)*(n-2));']);
+                eval(['outEEG.FC.Correlation.'  params.bands{i,2} '.local.DEG = degrees_und(temp_adj)./(n-1);'])
+                eval(['[~, ~, outEEG.FC.Correlation.'  params.bands{i,2} '.local.ECC, ~, ~] = charpath(D);'])
+                eval(['outEEG.FC.Correlation.'  params.bands{i,2} '.local.clustcoef = clustering_coef_wu(temp_adj);'])
+                eval(['outEEG.FC.Correlation.'  params.bands{i,2} '.local.Elocal = efficiency_wei(temp_adj, 1);']) %or 2 for modified version
+                eval(['outEEG.FC.Correlation.'  params.bands{i,2} '.local.EC = eigenvector_centrality_und(temp_adj);'])
+
+                %global measures
+                eval(['[~, ~, ~, ~, outEEG.FC.Correlation.global.diam] = charpath(D);']);
+                eval(['[~, ~, ~, outEEG.FC.Correlation.global.rad, ~] = charpath(D);']);
+                eval(['outEEG.FC.Correlation.global.LN = leafNodes(temp_adj);']);
+                eval(['[outEEG.FC.Correlation.global.lambda, ~, ~, ~, ~] = charpath(D);']);
+                %outEEG.FC.Correlation.global.DEGcor = pearson(temp_adj); %CHECK
+                %THIS --> this is fot weighted
+                eval(['outEEG.FC.Correlation.global.Eglobal = efficiency_wei(temp_adj, 0);']);
+            end;
+            
+            
+            
+            
+            clear temp adj testEEG;
+        end; 
     end;
 end
 

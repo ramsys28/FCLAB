@@ -127,7 +127,7 @@ end;
 
 param.graph=structout.graph;
 
-[EEG, com] = fclab(EEG, param);
+[EEG, com] = fclab(EEG,param);
 
 % return the string command
 % -------------------------
