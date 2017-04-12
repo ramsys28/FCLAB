@@ -1,6 +1,8 @@
+
 % pop_fclab() - Functional Connectivity Lab for EEGLAB  
 %
 % Usage:
+
 %   >>  OUTEEG = pop_fclab( INEEG, type );
 %
 % Inputs:
@@ -125,13 +127,12 @@ else
     end;
 end;
 
-<<<<<<< HEAD
+
 param.graph=structout.graph;
 
 [EEG, com] = fclab(EEG,param);
-=======
-[EEG, com] = fclab(EEG, param);
->>>>>>> origin/master
+
+
 
 % return the string command
 % -------------------------
