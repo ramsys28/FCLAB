@@ -40,47 +40,42 @@ end
 outEEG = inEEG;
 [m, n, o] = size(inEEG.data);
 if strcmp(params.metric, 'cor');
-    if (o == 1)
-        temp_adj = corrcoef(inEEG.data');
-    else
-        temp_adj = corrcoef(mean(inEEG.data,3)');
-    end  
+    if isempty(params.bands) % whole signal
+        if (o == 1)
+            temp_adj = corrcoef(inEEG.data');
+        else
+            temp_adj = corrcoef(mean(inEEG.data,3)'); % events data
+        end
+        outEEG.FC.Correlation.adj_matrix.all_freq=temp_adj;
+        if params.graph==1
+            L = weight_conversion(temp_adj, 'lengths'); %connection-length matrix
+            D = distance_wei(L); %distance matrix
+            %local measures
+            outEEG.FC.Correlation.local.BC = betweenness_wei(L)./((n-1)*(n-2));
+            outEEG.FC.Correlation.local.DEG = degrees_und(temp_adj)./(n-1);
+            [~, ~, outEEG.FC.Correlation.local.ECC, ~, ~] = charpath(D);
+            outEEG.FC.Correlation.local.clustcoef = clustering_coef_wu(temp_adj);
+            outEEG.FC.Correlation.local.Elocal = efficiency_wei(temp_adj, 1); %or 2 for modified version
+            outEEG.FC.Correlation.local.EC = eigenvector_centrality_und(temp_adj);
+
+            %global measures
+            [~, ~, ~, ~, outEEG.FC.Correlation.global.diam] = charpath(D);
+            [~, ~, ~, outEEG.FC.Correlation.global.rad, ~] = charpath(D);
+            outEEG.FC.Correlation.global.LN = leafNodes(temp_adj);
+            [outEEG.FC.Correlation.global.lambda, ~, ~, ~, ~] = charpath(D);
+            %outEEG.FC.Correlation.global.DEGcor = pearson(temp_adj); %CHECK
+            %THIS --> this is fot weighted
+            outEEG.FC.Correlation.global.Eglobal = efficiency_wei(temp_adj, 0);
+        end;
+    else % frequency bands
+        [mf nf] = size(params.bands);
+        for i = 1:mf
+            
+            
+        end; 
+    end;
 end
 
-%% Apply threshold value (if any)
-% disp(['Thresh set to ', num2str(params.gthresh)]);
-% if(isempty(params.gthresh) ~= 1 && isnan(params.gthresh) == 0)
-%     temp_adj(temp_adj < params.gthresh) = 0;
-% end
-
-disp('>>FCLAB: Automatically discarding potential negative values...');
-temp_adj(temp_adj < 0) = 0;
-outEEG.FC.correlation.adj_matrix = temp_adj;
-
-%% Perform network analysis
-addpath('2017_01_15_BCT');
-addpath('matlab_networks_routines/code');
-
-L = weight_conversion(temp_adj, 'lengths'); %connection-length matrix
-D = distance_wei(L); %distance matrix
-
-%local measures
-outEEG.FC.correlation.local.BC = betweenness_wei(L)./((n-1)*(n-2));
-outEEG.FC.correlation.local.DEG = degrees_und(temp_adj)./(n-1);
-[~, ~, outEEG.FC.correlation.local.ECC, ~, ~] = charpath(D);
-outEEG.FC.correlation.local.clustcoef = clustering_coef_wu(temp_adj);
-outEEG.FC.correlation.local.Elocal = efficiency_wei(temp_adj, 1); %or 2 for modified version
-outEEG.FC.correlation.local.EC = eigenvector_centrality_und(temp_adj);
-
-%global measures
-[~, ~, ~, ~, outEEG.FC.correlation.global.diam] = charpath(D);
-[~, ~, ~, outEEG.FC.correlation.global.rad, ~] = charpath(D);
-outEEG.FC.correlation.global.LN = leaf_nodes(temp_adj);
-[outEEG.FC.correlation.global.lambda, ~, ~, ~, ~] = charpath(D);
-outEEG.FC.correlation.global.DEGcor = pearson(temp_adj); %CHECK THIS
-outEEG.FC.correlation.global.Eglobal = efficiency_wei(temp_adj, 0);
-
-%%
 com = sprintf('fclab( %s, %s );', inputname(1), 'params');
 
 return;

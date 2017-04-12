@@ -31,24 +31,48 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-function [outEEG, com] = fclab(inEEG,params);
+function [outEEG, com] = fclab(inEEG, params)
 if nargin < 1
-    error('FCLAB:Need parameters')
+    error('FCLAB:Need parameters');
 	return;
-end;
-outEEG=inEEG;
-[m,n,o]=size(inEEG.data)
-if strcmp(params.metric,'cor');
-    if o==1
-        outEEG.FC.correlation.adj_matrix=corrcoef(inEEG.data');
+end
+
+outEEG = inEEG;
+[m, n, o] = size(inEEG.data);
+if strcmp(params.metric, 'cor');
+    if isempty(params.bands)
+        if (o == 1)
+            temp_adj = corrcoef(inEEG.data');
+        else
+            temp_adj = corrcoef(mean(inEEG.data,3)'); % events data
+        end
+        outEEG.FC.Correlation.adj_matrix=temp_adj;
+        if params.graph==1
+            L = weight_conversion(temp_adj, 'lengths'); %connection-length matrix
+            D = distance_wei(L); %distance matrix
+            %local measures
+            outEEG.FC.Correlation.local.BC = betweenness_wei(L)./((n-1)*(n-2));
+            outEEG.FC.Correlation.local.DEG = degrees_und(temp_adj)./(n-1);
+            [~, ~, outEEG.FC.Correlation.local.ECC, ~, ~] = charpath(D);
+            outEEG.FC.Correlation.local.clustcoef = clustering_coef_wu(temp_adj);
+            outEEG.FC.Correlation.local.Elocal = efficiency_wei(temp_adj, 1); %or 2 for modified version
+            outEEG.FC.Correlation.local.EC = eigenvector_centrality_und(temp_adj);
+
+            %global measures
+            [~, ~, ~, ~, outEEG.FC.Correlation.global.diam] = charpath(D);
+            [~, ~, ~, outEEG.FC.Correlation.global.rad, ~] = charpath(D);
+            outEEG.FC.Correlation.global.LN = leafNodes(temp_adj);
+            [outEEG.FC.Correlation.global.lambda, ~, ~, ~, ~] = charpath(D);
+            %outEEG.FC.Correlation.global.DEGcor = pearson(temp_adj); %CHECK
+            %THIS --> this is fot weighted
+            outEEG.FC.Correlation.global.Eglobal = efficiency_wei(temp_adj, 0);
+        end;
     else
-        outEEG.FC.correlation.adj_matrix=corrcoef(mean(inEEG.data,3)');
-    end
-end;
+        
+        
+    end;
+end
 
 com = sprintf('fclab( %s, %s );', inputname(1), 'params');
 
-
-
 return;
-
