@@ -31,10 +31,11 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-function [outEEG, com] = fclab(inEEG, params)
+function [outEEG, com] = fclab(inEEG,params);
 if nargin < 1
-    error('FCLAB:Need parameters');
+    error('FCLAB:Need parameters')
 	return;
+<<<<<<< HEAD
 end
 
 outEEG = inEEG;
@@ -110,7 +111,22 @@ if strcmp(params.metric, 'cor');
         end; 
     end;
 end
+=======
+end;
+outEEG=inEEG;
+[m,n,o]=size(inEEG.data)
+if strcmp(params.metric,'cor');
+    if o==1
+        outEEG.FC.correlation.adj_matrix=corrcoef(inEEG.data');
+    else
+        outEEG.FC.correlation.adj_matrix=corrcoef(mean(inEEG.data,3)');
+    end
+end;
+>>>>>>> origin/master
 
 com = sprintf('fclab( %s, %s );', inputname(1), 'params');
 
+
+
 return;
+
