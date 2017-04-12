@@ -90,7 +90,7 @@ if nargin < 3
             { 'Style', 'text', 'string', 'Frequency Band9 [low high]',   } ...
       { 'Style', 'edit', 'string', '' 'tag' 'frb9'} ...
       { 'Style', 'edit', 'string', '' 'tag' 'frb9_name'} {} ...
-      { 'Style', 'checkbox', 'string' 'Compute all graph theoretical parameters' 'value' 0 'tag' 'graph'} ...
+      { 'Style', 'checkbox', 'string' 'Compute all graph theoretical parameters' 'value' 0 'tag' 'graph' 'Callback', @popupCallback_graph} ...
       };
  
       [ tmp1 tmp2 strhalt structout ] = inputgui(geometry, uilist, ...
@@ -125,8 +125,6 @@ else
     end;
 end;
 
-param.graph=structout.graph;
-
 [EEG, com] = fclab(EEG, param);
 
 % return the string command
@@ -148,6 +146,18 @@ function popupCallback_drp(obj,event)
 return;
 
 function popupCallback_all(obj,event)
+   
+
+    if obj.Value==1
+         handle = findobj('Tag', 'metric');
+         set(handle,'Visible','Off')
+    else
+        handle = findobj('Tag', 'metric');
+        set(handle,'Visible','On')
+    end
+return;
+
+function popupCallback_graph(obj,event)
    
 
     if obj.Value==1

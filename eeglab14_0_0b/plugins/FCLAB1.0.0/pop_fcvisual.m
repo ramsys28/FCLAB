@@ -57,7 +57,7 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-G = evalin('base', 'EEG.FC.Correlation.adj_matrix');
+G = evalin('base', 'EEG.FC.correlation.adj_matrix');
 axes(handles.axes1);
 imagesc(double(G)); colormap(jet); colorbar;
 
