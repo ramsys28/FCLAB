@@ -115,13 +115,13 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-G = evalin('base', 'EEG.FC.correlation.adj_matrix');
+G = evalin('base', 'EEG.FC.Correlation.adj_matrix');
 thresh = str2num(char(get(handles.edit1, 'String'))); %#ok<ST2NM>
 
-if(isempty(thresh) ~= 1)
+if(~isempty(thresh))
     G(G<thresh) = 0;
 else
-    ;
+    G(G<thresh) = 1;
 end
 
 axes(handles.axes1); imagesc(double(G)); colorbar;
@@ -169,6 +169,14 @@ function popupmenu2_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu2 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu2
+contents = cellstr(get(hObject,'String'))
+a=varargin{1};
+axes(handles.axes1); 
+eval(['imagesc(double(a.FC.Correlation.' contents{get(hObject,'Value')} '.adj_matrix)); colormap(jet); colorbar;']);     
+
+    
+    
+    
 
 
 % --- Executes during object creation, after setting all properties.
@@ -193,7 +201,7 @@ function axes1_ButtonDownFcn(hObject, eventdata, handles,varargin)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 disp(test)
-band=handles.popupmenu2.Value
+band=handles.popupmenu2.Value;
 figure('units','normalized','outerposition',[0 0 1 1])
 a=varargin{1};
 eval(['imagesc(double(a.FC.Correlation.' band '.adj_matrix)); colormap(jet); colorbar;']);

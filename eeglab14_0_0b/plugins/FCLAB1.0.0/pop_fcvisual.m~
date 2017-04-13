@@ -51,9 +51,7 @@ function pop_fcvisual_OpeningFcn(hObject, eventdata, handles, varargin)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to pop_fcvisual (see VARARGIN)
-%field1 = getfield(varargin{1}, 'FC');
-%field2 = getfield(field1, 'parameters');
-%bands=field2.bands(:,2);
+
 a=varargin{1};
 % Choose default command line output for pop_fcvisual
 handles.output = hObject;
@@ -117,13 +115,13 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-G = evalin('base', 'EEG.FC.correlation.adj_matrix');
+G = evalin('base', 'EEG.FC.Correlation.adj_matrix');
 thresh = str2num(char(get(handles.edit1, 'String'))); %#ok<ST2NM>
 
-if(isempty(thresh) ~= 1)
+if(~isempty(thresh))
     G(G<thresh) = 0;
 else
-    ;
+    G(G<thresh) = 1;
 end
 
 axes(handles.axes1); imagesc(double(G)); colorbar;
@@ -171,6 +169,15 @@ function popupmenu2_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu2 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu2
+contents = cellstr(get(hObject,'String'))
+
+contents{get(hObject,'Value')}
+
+        
+
+    
+    
+    
 
 
 % --- Executes during object creation, after setting all properties.
@@ -190,8 +197,12 @@ end
 
 
 % --- Executes on mouse press over axes background.
-function axes1_ButtonDownFcn(hObject, eventdata, handles)
+function axes1_ButtonDownFcn(hObject, eventdata, handles,varargin)
 % hObject    handle to axes1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+disp(test)
+band=handles.popupmenu2.Value;
 figure('units','normalized','outerposition',[0 0 1 1])
+a=varargin{1};
+eval(['imagesc(double(a.FC.Correlation.' band '.adj_matrix)); colormap(jet); colorbar;']);
