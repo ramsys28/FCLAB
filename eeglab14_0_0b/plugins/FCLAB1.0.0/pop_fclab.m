@@ -53,12 +53,10 @@ eeglab_path = strrep(eeglab_path,'eeglab.m','');
 metrics_file = dir([eeglab_path 'plugins/FCLAB1.0.0/fcmetric_*.m']);
 metrics = [];
 for i = 1:length(metrics_file)
-     metrics=strcat(metrics, strrep(metrics_file(i).name,'.m','');
+     metrics=strcat(metrics, strrep(strrep(metrics_file(i).name,'fcmetric_',''),'.m',''));
+     metrics=strcat(metrics,'|');
 end;
-
-if exist('data2cs_event.m', 'file') == 2
-    metrics=strcat(metrics,'Inverse Coherence');
-end;
+metrics = metrics(1:end-1);
 
 
 if nargin < 3
@@ -108,18 +106,17 @@ else
     error('Too many inputs');
 end;
 
-switch structout.metric
-    case 1
-        param.metric='cor';
-    case 2
-        param.metric='icoh';
-end;
+EEG.FC.parameters.metric=strrep(metrics_file(structout.metric).name,'.m','');
 
-fields=fieldnames(structout);
+
+
 
 if structout.metric_all==1
-    param.metric='all';
+   EEG.FC.parameters.metric='all';
 end;
+
+
+fields=fieldnames(structout);
 k=1;
 if prod([isempty(structout.frb1),isempty(structout.frb2),isempty(structout.frb3),...
         isempty(structout.frb4),isempty(structout.frb5),isempty(structout.frb6),...
@@ -128,23 +125,25 @@ if prod([isempty(structout.frb1),isempty(structout.frb2),isempty(structout.frb3)
 else
     for i=4:2:20
         if ~isempty(getfield(structout,fields{i}))
-            param.bands{k,1}=getfield(structout,fields{i});
-            param.bands{k,2}=getfield(structout,fields{i+1});
+            EEG.FC.parameters.bands{k,1}=getfield(structout,fields{i});
+            EEG.FC.parameters.bands{k,2}=getfield(structout,fields{i+1});
             k=k+1;
         end;
     end;
 end;
 
 
-param.graph=structout.graph;
+EEG.FC.parameters.graph=structout.graph;
 
-[EEG, com] = fclab(EEG,param);
+    [EEG, com] = fclab(EEG);
+
+    
 
 
 
 % return the string command
 % -------------------------
-com = sprintf('pop_fclab( %s, %d );', inputname(1), typeproc);
+com = sprintf('pop_fclab( %s);', inputname(1));
 
 
 
