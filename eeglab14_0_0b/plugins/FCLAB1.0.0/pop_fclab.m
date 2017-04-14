@@ -48,7 +48,14 @@ typeproc=1;
 
 % PREPEI NA EXETASOUME POIES METRIKES EINAI DIATHESIMES
 % FOR EXAMPLE
-metrics='Correlation|';
+eeglab_path = which('eeglab');
+eeglab_path = strrep(eeglab_path,'eeglab.m','');
+metrics_file = dir([eeglab_path 'plugins/FCLAB1.0.0/fcmetric_*.m']);
+metrics = [];
+for i = 1:length(metrics_file)
+     metrics=strcat(metrics, strrep(metrics_file(i).name,'.m','');
+end;
+
 if exist('data2cs_event.m', 'file') == 2
     metrics=strcat(metrics,'Inverse Coherence');
 end;
