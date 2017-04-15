@@ -59,6 +59,7 @@ f_lambda(:,:,t:(2*t-1))=temp;
 
 g_lambda=zeros(m,m,(2*t-1));
 for lambda=1:(2*t-1)
+           warning('OFF','MATLAB:nearlySingularMatrix')
            g_lambda(:,:,lambda)=inv(f_lambda(:,:,lambda));
 end
 R_lambda=zeros(m,m,(2*t-1));

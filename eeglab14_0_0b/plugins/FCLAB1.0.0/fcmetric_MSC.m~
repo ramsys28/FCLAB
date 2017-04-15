@@ -1,0 +1,39 @@
+function outEEG=fcmetric_MSC(inEEG)
+[m1 n1]=size(EEG.data);
+mf = size(inEEG.FC.parameters.bands,1);
+outEEG=inEEG;
+for i1=1:m1-1
+    for j1=i+1:m1
+        [Cxy F]=mscohere(EEG.data(i1,:),EEG.data(j1,:),50,1,[],EEG.srate);
+        
+        for bands=1:mf
+            freq_range=str2num(inEEG.FC.parameters.bands{i,1});
+            for i=1:length(F)
+                if F(i,1)>freq_range(1)
+                    start_freq=i;
+                    break;
+                end;
+            end;
+            for i=1:length(F)
+                if F(i,1)<freq_range(2)
+                    stop_freq=i;
+                    break;
+                end;
+            end;
+            
+        end;
+         eval(['outEEG.FC.mutualinf.' strrep(inEEG.FC.parameters.bands{i,2},' ','_') '.adj_matrix=Matrix;']);
+
+        
+        MSC.delta(i1,j1)=mean(Cxy(start_delta:start_theta-1,1));
+        MSC.theta(i1,j1)=mean(Cxy(start_theta:start_alpha1-1,1));
+        MSC.alpha1(i1,j1)=mean(Cxy(start_alpha1:start_alpha2-1,1));
+        MSC.alpha2(i1,j1)=mean(Cxy(start_alpha2:start_beta-1,1));
+        MSC.betta(i1,j1)=mean(Cxy(start_beta:start_gamma-1,1));
+        MSC.gamma(i1,j1)=mean(Cxy(start_gamma:end_gamma,1));
+        
+        
+    end;
+end;
+
+        

@@ -33,7 +33,7 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-function [EEG, com] = pop_fclab( EEG, typeproc );
+function [outEEG, com] = pop_fclab(inEEG);
 
 % the command output is a hidden output that does not have to
 % be described in the header
@@ -106,13 +106,13 @@ else
     error('Too many inputs');
 end;
 
-EEG.FC.parameters.metric=strrep(metrics_file(structout.metric).name,'.m','');
+inEEG.FC.parameters.metric=strrep(metrics_file(structout.metric).name,'.m','');
 
 
 
 
 if structout.metric_all==1
-   EEG.FC.parameters.metric='all';
+   inEEG.FC.parameters.metric='all';
 end;
 
 
@@ -125,17 +125,17 @@ if prod([isempty(structout.frb1),isempty(structout.frb2),isempty(structout.frb3)
 else
     for i=4:2:20
         if ~isempty(getfield(structout,fields{i}))
-            EEG.FC.parameters.bands{k,1}=getfield(structout,fields{i});
-            EEG.FC.parameters.bands{k,2}=getfield(structout,fields{i+1});
+            inEEG.FC.parameters.bands{k,1}=getfield(structout,fields{i});
+            inEEG.FC.parameters.bands{k,2}=getfield(structout,fields{i+1});
             k=k+1;
         end;
     end;
 end;
 
 
-EEG.FC.parameters.graph=structout.graph;
+inEEG.FC.parameters.graph=structout.graph;
 
-    [EEG, com] = fclab(EEG);
+    [outEEG, com] = fclab(inEEG);
 
     
 

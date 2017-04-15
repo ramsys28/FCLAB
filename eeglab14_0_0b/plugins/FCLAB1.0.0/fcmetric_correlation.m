@@ -1,6 +1,7 @@
 function outEEG=fcmetric_correlation(inEEG)
 mf = size(inEEG.FC.parameters.bands,1);
 [m, n, o] = size(inEEG.data);
+outEEG=inEEG;
 for i = 1:mf
     testEEG = inEEG;
     freq_range=str2num(inEEG.FC.parameters.bands{i,1});
@@ -11,7 +12,7 @@ for i = 1:mf
     else
         temp_adj = corrcoef(mean(testEEG.data,3)'); % events data
     end
-    eval(['outEEG.FC.Correlation.' strrep(inEEG.FC.parameters.bands{i,2},' ','_') '.adj_matrix=temp_adj;']);
+    eval(['outEEG.FC.correlation.' strrep(inEEG.FC.parameters.bands{i,2},' ','_') '.adj_matrix=temp_adj;']);
 end;
 
     
