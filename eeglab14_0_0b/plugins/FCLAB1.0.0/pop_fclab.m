@@ -123,6 +123,7 @@ if prod([isempty(structout.frb1),isempty(structout.frb2),isempty(structout.frb3)
          isempty(structout.frb7),isempty(structout.frb8),isempty(structout.frb9)])
     error('Please fill a specific bandwidth or click to Auto Complete');
 else
+    inEEG.FC.parameters.bands=[];
     for i=4:2:20
         if ~isempty(getfield(structout,fields{i}))
             inEEG.FC.parameters.bands{k,1}=getfield(structout,fields{i});
