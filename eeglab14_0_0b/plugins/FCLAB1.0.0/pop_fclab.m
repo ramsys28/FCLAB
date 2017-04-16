@@ -50,7 +50,7 @@ typeproc=1;
 % FOR EXAMPLE
 eeglab_path = which('eeglab');
 eeglab_path = strrep(eeglab_path,'eeglab.m','');
-metrics_file = dir([eeglab_path 'plugins/FCLAB1.0.0/fcmetric_*.m']);
+metrics_file = dir([eeglab_path 'plugins/FCLAB1.0.0/FC_metrics/fcmetric_*.m']);
 metrics = [];
 for i = 1:length(metrics_file)
      metrics=strcat(metrics, strrep(strrep(metrics_file(i).name,'fcmetric_',''),'.m',''));
