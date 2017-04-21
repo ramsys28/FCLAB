@@ -42,13 +42,7 @@ fclab_dependences(); % check for dependences and download.
 if ~strcmp(inEEG.FC.parameters.metric, 'all');
    eval(['outEEG=' inEEG.FC.parameters.metric '(inEEG);']);
 else
-    eeglab_path = which('eeglab');
-    eeglab_path = strrep(eeglab_path,'eeglab.m','');
     metrics_file = dir([eeglab_path 'plugins/FCLAB1.0.0/FC_metrics/fcmetric_*.m']);
-    
-    for i=1:3
-        eval(['inEEG=' strrep(metrics_file(i).name,'.m','') '(inEEG);']);
-    end;
 end
 
 
