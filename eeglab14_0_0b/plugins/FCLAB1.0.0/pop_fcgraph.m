@@ -46,17 +46,18 @@ matrices=fieldnames(temEEG.FC);
 clear temEEG;
 if nargin < 3
     g = [1 1];
-    geometry = { [g] [g] [g 1] [g 1]};
+    geometry = { [g] [g 1] [g 1] [g 1]};
     uilist = { ...
       { 'Style', 'text', 'string', 'Choose FC matrix', 'fontweight', 'bold' } ...
       { 'Style', 'popupmenu', 'string', matrices 'tag' 'metric'}...
       { 'Style', 'checkbox', 'string' 'Threshold?' 'value' 0 'tag' 'threshold' 'Callback', @popupCallback_threshquest} ...
       {}...
+      { 'Style', 'checkbox', 'string' '+/-' 'value' 0 'tag' 'plus_minus' 'Callback', @popupCallback_plusminus} ...
       { 'Style', 'text', 'string', 'Absolute Threshold', 'visible' 'off' 'tag' 'absthr_label'  } ...
-      { 'Style', 'edit', 'string', '' 'tag' 'absthr' 'visible' 'off' 'Callback', @popupCallback_abs_thr} ...
+      { 'Style', 'edit', 'string', '' 'tag' 'absthr' 'visible' 'off' } ...
       { 'Style', 'checkbox', 'string' 'Symmetrize?' 'value' 0 'tag' 'symmetrize'} ...
       { 'Style', 'text', 'string', 'Proportional Threshold (%)', 'visible' 'off' 'tag' 'prop_label'  } ...
-      { 'Style', 'edit', 'string', '' 'tag' 'propthr' 'visible' 'off' 'Callback', @popupCallback_prop_thr} ...
+      { 'Style', 'edit', 'string', '' 'tag' 'propthr' 'visible' 'off' } ...
       { 'Style', 'checkbox', 'string' 'Binarize?' 'visible' 'off' 'value' 0 'tag' 'binarize' } ...
       
       };
@@ -79,9 +80,6 @@ end;
 com = sprintf('pop_fcgraph( %s);', inputname(1));
 
 
-
-
-
 return;
 
 
@@ -97,6 +95,8 @@ function popupCallback_threshquest(obj,event)
        handle(1).Visible='on';
        handle = findobj('Tag', 'binarize');
        handle(1).Visible='on';
+       handle = findobj('Tag', 'plus_minus');
+       handle(1).Value=0;
     else
        handle = findobj('Tag', 'absthr');
        handle(1).Visible='off';
@@ -111,24 +111,14 @@ function popupCallback_threshquest(obj,event)
     end
 return;
 
-function popupCallback_prop_thr(obj,event)
-    if isempty(obj.String)
-       handle = findobj('Tag', 'absthr');
-       handle(1).Enable='on';
-    else
-       handle = findobj('Tag', 'absthr');
-       handle(1).Enable='off';
-    end
+
+function popupCallback_plusminus(obj,event)
+handle = findobj('Tag', 'threshold');
+if handle(1).Value==1
+    handle(1).Value=0;
+    popupCallback_threshquest(handle(1),event)
+else
+    
+    popupCallback_threshquest(handle(1),event)
+end;
 return;
-
-function popupCallback_abs_thr(obj,event)
-    if isempty(obj.String)
-       handle = findobj('Tag', 'propthr');
-       handle(1).Enable='on';
-    else
-       handle = findobj('Tag', 'propthr');
-       handle(1).Enable='off';
-    end
-return;
-
-
