@@ -29,7 +29,7 @@ s.nodal.BCnorm=betweenness_wei(s.length_matrix)./((size(C,1)-1)*(size(C,1)-2));
     charpath(s.distance);
 s.nodal.CC=clustering_coef_wu(C);
 s.gobal.DEN=density_und(C);
-[s.gobal.GEdiff,s.edge.Ediff] = diffusion_efficiency(C);
+%[s.gobal.GEdiff,s.edge.Ediff] = diffusion_efficiency(C); problem check
 s.edge.EBC = edge_betweenness_wei(C);
 s.local.LE=real(efficiency_wei(C,1));
 s.local.EVC=eigenvector_centrality_und(C);

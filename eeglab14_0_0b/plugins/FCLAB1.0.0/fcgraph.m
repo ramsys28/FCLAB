@@ -20,8 +20,18 @@ if(inEEG.FC.graph_prop.plus_minus)
     end;
     for i=1:length(bands)
          eval(['A=inEEG.FC.' metric '.' bands{i} '.adj_matrix;']);
-         eval(['inEEG.FC.' metric '.' bands{i} '.adj_matrix_plus=A(A>0);']);
-         eval(['inEEG.FC.' metric '.' bands{i} '.adj_matrix_minus=A(A<0);']);
+         Amin=A;
+         Apl=A;
+         Amin(Amin>0)=0;
+         Amin=-Amin;
+         Apl(Apl<0)=0;
+         eval(['inEEG.FC.' metric '.' bands{i} '.adj_matrix_plus=Apl;']);
+         eval(['inEEG.FC.' metric '.' bands{i} '.adj_matrix_minus=Amin;']);
+         eval(['inEEG.FC.' metric '.' bands{i} '.adj_matrix_plus_GP=fclab_graphproperties(inEEG.FC.'...
+             metric '.' bands{i} '.adj_matrix_plus);']);
+         eval(['inEEG.FC.' metric '.' bands{i} '.adj_matrix_minus_GP=fclab_graphproperties(inEEG.FC.'...
+             metric '.' bands{i} '.adj_matrix_minus);']);
+    
     end;
         
 else
@@ -35,6 +45,9 @@ else
                 end;
             end;
             eval(['inEEG.FC.' metric '.' bands{i} '.sym_adj_matrix=A;']);
+            eval(['inEEG.FC.' metric '.' bands{i} '.sym_adj_matrix_GP=fclab_graphproperties(inEEG.FC.'...
+                metric '.' bands{i} '.sym_adj_matrix);']);
+    
             clear A;
         end;
     end;
@@ -51,6 +64,12 @@ else
                             strrep(inEEG.FC.graph_prop.absthr,'.','_')...
                             '=threshold_absolute(inEEG.FC.' metric '.' bands{i}...
                             '.adj_matrix,' inEEG.FC.graph_prop.absthr ');']);
+                        
+                        eval(['inEEG.FC.' metric '.' bands{i} '.absthr_'...
+                            strrep(inEEG.FC.graph_prop.absthr,'.','_')...
+                            '_GP=fclab_graphproperties(inEEG.FC.' metric '.' bands{i} '.absthr_'...
+                            strrep(inEEG.FC.graph_prop.absthr,'.','_') ');']);
+    
                     end;
                 else
                     for i=1:length(bands)
@@ -59,6 +78,12 @@ else
                         A(A~=0)=1;
                         eval(['inEEG.FC.' metric '.' bands{i} '.bin_absthr_'...
                             strrep(inEEG.FC.graph_prop.absthr,'.','_') '=A;']);
+                        
+                        eval(['inEEG.FC.' metric '.' bands{i} '.bin_absthr_'...
+                            strrep(inEEG.FC.graph_prop.absthr,'.','_')...
+                            '_GP=fclab_graphproperties(inEEG.FC.' metric '.' bands{i} '.bin_absthr_'...
+                            strrep(inEEG.FC.graph_prop.absthr,'.','_') ');']);
+                        
                         clear A;
 
                     end;
@@ -73,6 +98,11 @@ else
                             '=threshold_proportional(inEEG.FC.' metric '.'...
                             bands{i} '.adj_matrix,' ...
                             num2str(str2num(inEEG.FC.graph_prop.propthr)/100) ');']);
+                        
+                        eval(['inEEG.FC.' metric '.' bands{i} '.propthr_'...
+                            inEEG.FC.graph_prop.propthr '_GP=fclab_graphproperties(inEEG.FC.'...
+                            metric '.' bands{i} '.propthr_'...
+                            inEEG.FC.graph_prop.propthr ');']);
                     end;
                 else
                    for i=1:length(bands)
@@ -81,6 +111,10 @@ else
                         A(A~=0)=1;
                         eval(['inEEG.FC.' metric '.' bands{i} '.bin_propthr_'...
                             inEEG.FC.graph_prop.propthr '=A;']);
+                        
+                        eval(['inEEG.FC.' metric '.' bands{i} '.bin_propthr_'...
+                            inEEG.FC.graph_prop.propthr '_GP=fclab_graphproperties(A);']);
+                        
                         clear A;
                     end;
                 end;     
@@ -93,6 +127,13 @@ else
                             strrep(inEEG.FC.graph_prop.absthr,'.','_')...
                             '=threshold_absolute(inEEG.FC.' metric '.' bands{i}...
                             '.sym_adj_matrix,' inEEG.FC.graph_prop.absthr ');']);
+                        
+                        eval(['inEEG.FC.' metric '.' bands{i} '.sym_absthr_'...
+                            strrep(inEEG.FC.graph_prop.absthr,'.','_')...
+                            '_GP=fclab_graphproperties(inEEG.FC.' metric...
+                            '.' bands{i} '.sym_absthr_'...
+                            strrep(inEEG.FC.graph_prop.absthr,'.','_') ');']);
+                        
                     end;
                 else
                     for i=1:length(bands)
@@ -102,6 +143,10 @@ else
                         eval(['inEEG.FC.' metric '.' bands{i} '.sym_bin_absthr_'...
                             strrep(inEEG.FC.graph_prop.absthr,'.','_')...
                             '=A;']);
+                        
+                        eval(['inEEG.FC.' metric '.' bands{i} '.sym_bin_absthr_'...
+                            strrep(inEEG.FC.graph_prop.absthr,'.','_')...
+                            '_GP=fclab_graphproperties(A);']);
                         clear A;
 
                     end;
@@ -116,6 +161,12 @@ else
                             '=threshold_proportional(inEEG.FC.' metric '.' ...
                             bands{i} '.sym_adj_matrix,'...
                             num2str(str2num(inEEG.FC.graph_prop.propthr)/100) ');']);
+                        
+                        eval(['inEEG.FC.' metric '.' bands{i} '.sym_propthr_'...
+                            inEEG.FC.graph_prop.propthr ...
+                            '_GP=fclab_graphproperties(inEEG.FC.'...
+                            metric '.' bands{i} '.sym_propthr_'...
+                            inEEG.FC.graph_prop.propthr ');']);
                     end;
                 else
                    for i=1:length(bands)
@@ -124,6 +175,10 @@ else
                         A(A~=0)=1;
                         eval(['inEEG.FC.' metric '.' bands{i} '.sym_bin_propthr_'...
                             inEEG.FC.graph_prop.propthr '=A;']);
+                        
+                        eval(['inEEG.FC.' metric '.' bands{i} '.sym_bin_propthr_'...
+                            inEEG.FC.graph_prop.propthr...
+                            '_GP=fclab_graphproperties(A);']);
                         clear A;
                     end;
                 end;     
