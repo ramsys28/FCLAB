@@ -1,4 +1,4 @@
-function [] = topoplot_connect(displayStruct, loc_file)
+function [] = topoplot_connect(displayStruct, loc_file,cM)
 % NOTE: The cartoon head is drawn using code in topoplot.m file from EEGLAB
 % v6.01b (http://sccn.ucsd.edu/eeglab/). 
 %
@@ -30,7 +30,7 @@ function [] = topoplot_connect(displayStruct, loc_file)
 % praneeth@mit.edu
 %
 
-BACKCOLOR = [1 1 1];  % EEGLAB standard
+BACKCOLOR = [0.643 0.776 1];  % EEGLAB standard
 rmax = 0.5;             % actual head radius - Don't change this!
 CIRCGRID   = 201;       % number of angles to use in drawing circles
 AXHEADFAC = 1.3;        % head to axes scaling factor
@@ -160,7 +160,7 @@ plot3(y,x,ones(size(x))*ELECTRODE_HEIGHT,...
 
 % praneeth - starts
 numChanPairs = size(displayStruct.chanPairs, 1);
-cM = colormap;
+
 if ~isfield(displayStruct, 'connectStrength')
     cmapPos = ceil(size(cM, 1)/2)*ones(size(displayStruct.chanPairs, 1), 1);
 else
