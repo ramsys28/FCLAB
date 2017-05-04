@@ -22,7 +22,7 @@ function varargout = pop_fcvisual(varargin)
 
 % Edit the above text to modify the response to help pop_fcvisual
 
-% Last Modified by GUIDE v2.5 01-May-2017 13:00:34
+% Last Modified by GUIDE v2.5 01-May-2017 20:30:03
           
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,6 +54,7 @@ function pop_fcvisual_OpeningFcn(hObject, eventdata, handles, varargin)
 
 a=varargin{1};
 handles.popupmenu1.UserData=a;
+handles.pushbutton2.UserData=a;
 % Choose default command line output for pop_fcvisual
 
 % colormaps -- start
@@ -81,6 +82,7 @@ else
     handles.popupmenu3.String=fieldnames_freq;
     axes(handles.axes1);
     imagesc(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix);
+    hold all
     handles.axes1.XTick=[1:a.nbchan];
     chanlabels=[];
     for i=1:a.nbchan
@@ -125,10 +127,10 @@ else
         axes(handles.axes7);
         colormap(handles.popupmenu1.String{handles.popupmenu1.Value});
         colorbar('south');
-        set(gca, 'CLim', [min(min(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix)),...
-            max(max(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix))]);
+        set(gca, 'CLim', [-1 1]);
         handles.slider1.Min=min(min(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix));
         handles.slider1.Max=max(max(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix));
+        handles.slider1.Max=handles.slider1.Max-eps;
         handles.slider1.Value=handles.slider1.Min;
         handles.slider1.UserData=a;
         handles.edit1.String=num2str(handles.slider1.Value);
@@ -173,6 +175,8 @@ function edit1_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit1 as text
 %        str2double(get(hObject,'String')) returns contents of edit1 as a double
+handles.slider1.Value=str2num(hObject.String);
+slider1_Callback(handles.slider1, eventdata, handles);
 guidata(hObject, handles);
 
 
@@ -188,22 +192,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-% --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-G = evalin('base', 'EEG.FC.Correlation.adj_matrix');
-thresh = str2num(char(get(handles.edit1, 'String'))); %#ok<ST2NM>
-
-if(~isempty(thresh))
-    G(G<thresh) = 0;
-else
-    G(G<thresh) = 1;
-end
-
-axes(handles.axes1); imagesc(double(G)); colorbar;
-guidata(hObject, handles);
 
 % --- Executes on selection change in popupmenu1.
 function popupmenu1_Callback(hObject, eventdata, handles)
@@ -217,7 +205,8 @@ function popupmenu1_Callback(hObject, eventdata, handles)
 colormap(gcf, eval(['fccolor_'...
     handles.popupmenu1.String{handles.popupmenu1.Value} '(64);']));
 
-
+aa=hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
+aa(aa<handles.slider1.Value)=0;
 
 if ~isempty(hObject.UserData.chanlocs)
     ds.chanPairs=[];
@@ -225,9 +214,10 @@ if ~isempty(hObject.UserData.chanlocs)
 
     for i=1:hObject.UserData.nbchan-1
         for j=i+1:hObject.UserData.nbchan
-            ds.chanPairs=[ds.chanPairs; i j];
-            ds.connectStrength=[ds.connectStrength...
-            hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix(i,j)];
+            if(aa(i,j)~=0)
+                ds.chanPairs=[ds.chanPairs; i j];
+                ds.connectStrength=[ds.connectStrength;aa(i,j)];
+            end;
         end;
     end;
 axes(handles.axes3);
@@ -283,14 +273,13 @@ end
 
 
 % --- Executes on mouse press over axes background.
-function axes1_ButtonDownFcn(hObject, eventdata, handles,varargin)
+function axes1_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to axes1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-disp(test)
+
 band=handles.popupmenu2.Value;
 figure('units','normalized','outerposition',[0 0 1 1])
-a=varargin{1};
 eval(['imagesc(double(a.FC.Correlation.' band '.adj_matrix)); colormap(jet); colorbar;']);
 
 
@@ -326,7 +315,7 @@ function slider1_Callback(hObject, eventdata, handles)
 aa=hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
 axes(handles.axes1);
 aa(aa<hObject.Value)=0;
-imagesc(aa);
+imagesc(aa,[-1,1]);
 a=hObject.UserData;
 handles.axes1.XTick=[1:a.nbchan];
 chanlabels=[];
@@ -351,6 +340,7 @@ for i=1:a.nbchan-1
         end;
     end;
 end;
+ds.connectStrengthLimits=[-1 1];
 axes(handles.axes3);
 eval(['topoplot_connect(ds,a.chanlocs,fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
 para.rot=90;
@@ -378,3 +368,25 @@ function slider1_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
+
+
+% --- Executes on button press in pushbutton2.
+function pushbutton2_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+band=handles.popupmenu2.Value;
+h_new=figure('units','normalized','outerposition',[0 0 1 1])
+aa=hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
+aa(aa<handles.slider1.Value)=0;
+imagesc(aa,[-1,1]);
+eval(['colormap(fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
+ax_new=findobj(h_new,'type','axes');
+a=hObject.UserData;
+handles.axes1.XTick=[1:a.nbchan];
+chanlabels=[];
+for i=1:a.nbchan
+    chanlabels{i,1}=a.chanlocs(i).labels;
+end;
+handles.ax_new.XTickLabel=chanlabels;
+handles.ax_new.XTickLabelRotation=90;
