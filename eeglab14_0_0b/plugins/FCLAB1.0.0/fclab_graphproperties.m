@@ -1,4 +1,5 @@
-function struct=fclab_graphproperties(W)
+function struct=fclab_graphproperties(W, band_ID)
+
 if ~issymmetric(W)
     directed=0;
 else
@@ -12,7 +13,10 @@ else
 end;
 struct=[];
 if(weighted & ~directed)
+    tic;
     struct=wu(W);
+    timer = toc;
+    disp(['>> fclab_graphproperties: Elapsed time for ', band_ID, ' band = ', num2str(timer), ' sec']);
 end;
 
 return;
