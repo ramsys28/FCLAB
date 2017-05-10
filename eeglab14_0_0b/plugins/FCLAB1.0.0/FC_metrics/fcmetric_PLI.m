@@ -18,7 +18,7 @@ for i = 1:mf
     end
         
     for j = 1:m-1
-        for k = i+1:m
+        for k = j+1:m
             hilbert1 = hilbert(X(j, :));
             hilbert2 = hilbert(X(k, :));
             df = angle(hilbert1) - angle(hilbert2);
