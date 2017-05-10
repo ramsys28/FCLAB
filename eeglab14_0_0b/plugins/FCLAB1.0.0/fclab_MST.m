@@ -16,7 +16,7 @@ function [MST_net, MST_params]=fclab_MST(Matrix, band_ID)
 Matrix = double(Matrix);
 n = size(Matrix, 2);
 
-disp('>> fclab_MST: Automatically ignoring negative weights...');
+disp('>> fclab_MST: Automatically ignoring negative weights (if not already discarded)...');
 Matrix(Matrix<0) = 0; %retain only positive values (for sure)
 
 tic;
