@@ -4,6 +4,7 @@ eeglab_path=strrep(eeglab_path,'eeglab.m','');
 general_folders = dir([eeglab_path 'plugins/FCLAB1.0.0']);
 flag_BCT = 0;
 flag_MITSE = 0;
+addpath('MST_params');
 
 %remove non-folders and ./..
 for k = length(general_folders):-1:1
