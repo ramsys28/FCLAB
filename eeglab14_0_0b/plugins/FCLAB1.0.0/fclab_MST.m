@@ -13,10 +13,10 @@ function [MST_net, MST_params]=fclab_MST(Matrix, band_ID)
 %           The weighted matrix should be non-negative.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-addpath('MST_params');
-
 Matrix = double(Matrix);
 n = size(Matrix, 2);
+
+disp('>> fclab_MST: Automatically ignoring negative weights...');
 Matrix(Matrix<0) = 0; %retain only positive values (for sure)
 
 tic;
