@@ -22,7 +22,7 @@ function varargout = pop_fcvisual(varargin)
 
 % Edit the above text to modify the response to help pop_fcvisual
 
-% Last Modified by GUIDE v2.5 01-May-2017 20:30:03
+% Last Modified by GUIDE v2.5 12-May-2017 13:46:37
           
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,6 +55,8 @@ function pop_fcvisual_OpeningFcn(hObject, eventdata, handles, varargin)
 a=varargin{1};
 handles.popupmenu1.UserData=a;
 handles.pushbutton2.UserData=a;
+handles.pushbutton3.UserData=a; %!!!
+handles.pushbutton4.UserData=a; %!!!
 % Choose default command line output for pop_fcvisual
 
 % colormaps -- start
@@ -105,9 +107,10 @@ else
                 
             end;
         end;
-        axes(handles.axes3);
+        handles.ds = ds;%!!!
+        axes(handles.axes2);
         eval(['topoplot_connect(ds,a.chanlocs,fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
-        handles.axes2.Visible='on';
+        handles.axes2.Visible='off'; %!!!
         colormap(eval(['fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64);']));
         para.rot=90;
         locs(:,1)=cell2mat({a.chanlocs.X});
@@ -220,8 +223,10 @@ if ~isempty(hObject.UserData.chanlocs)
             end;
         end;
     end;
-axes(handles.axes3);
-eval(['topoplot_connect(ds,hObject.UserData.chanlocs,fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
+    
+    handles.ds = ds;%!!!    
+    axes(handles.axes2);
+    eval(['topoplot_connect(ds,hObject.UserData.chanlocs,fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
 end;
 guidata(hObject, handles);
 
@@ -252,10 +257,6 @@ axes(handles.axes1);
 eval(['imagesc(double(a.FC.Correlation.' contents{get(hObject,'Value')} '.adj_matrix)); colormap(jet); colorbar;']);     
 
     
-    
-    
-
-
 % --- Executes during object creation, after setting all properties.
 function popupmenu2_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to popupmenu2 (see GCBO)
@@ -341,7 +342,8 @@ for i=1:a.nbchan-1
     end;
 end;
 ds.connectStrengthLimits=[-1 1];
-axes(handles.axes3);
+handles.ds = ds;%!!!
+axes(handles.axes2);
 eval(['topoplot_connect(ds,a.chanlocs,fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
 para.rot=90;
 locs(:,1)=cell2mat({a.chanlocs.X});
@@ -351,7 +353,7 @@ locs_2D=mk_sensors_plane(locs,para);
 
 hp=handles.uipanel2;
 showcs(aa,locs_2D,para,hp);
-
+guidata(hObject, handles);
 
 
 % Hints: get(hObject,'Value') returns position of slider
@@ -375,18 +377,55 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-band=handles.popupmenu2.Value;
-h_new=figure('units','normalized','outerposition',[0 0 1 1])
-aa=hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
-aa(aa<handles.slider1.Value)=0;
-imagesc(aa,[-1,1]);
+
+% band = handles.popupmenu2.Value;
+figure('units','normalized','outerposition',[0.2 0.2 0.6 0.8]);
+aa = hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
+aa(aa<handles.slider1.Value) = 0;
+imagesc(aa, [-1,1]);
 eval(['colormap(fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
-ax_new=findobj(h_new,'type','axes');
-a=hObject.UserData;
-handles.axes1.XTick=[1:a.nbchan];
-chanlabels=[];
-for i=1:a.nbchan
-    chanlabels{i,1}=a.chanlocs(i).labels;
+a = hObject.UserData;
+chanlabels = [];
+for i = 1:a.nbchan
+    chanlabels{i,1} = a.chanlocs(i).labels;
+end
+set(gca, 'XTick', [1:a.nbchan], 'XTickLabel', chanlabels, 'XTickLabelRotation', 90);
+set(gca, 'YTick', [1:a.nbchan], 'YTickLabel', chanlabels);
+title('Adjacency matrix', 'FontSize', 18);
+
+% --- Executes on button press in pushbutton3.
+function pushbutton3_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+figure('units','normalized','outerposition',[0.2 0.2 0.6 0.8]);
+colormap(eval(['fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64);']));
+eval(['topoplot_connect(handles.ds,hObject.UserData.chanlocs,fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
+title('Head Model', 'FontSize', 18);
+
+% --- Executes on button press in pushbutton4.
+function pushbutton4_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+h_new3 = figure('units','normalized','outerposition',[0.2 0.2 0.6 0.8]);
+aa = hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
+aa(aa<handles.slider1.Value)=0;
+a = hObject.UserData;
+chanlabels = [];
+for i = 1:a.nbchan
+    chanlabels{i,1} = a.chanlocs(i).labels;
 end;
-handles.ax_new.XTickLabel=chanlabels;
-handles.ax_new.XTickLabelRotation=90;
+colormap(eval(['fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64);']));
+para.rot = 90;
+locs(:,1) = cell2mat({a.chanlocs.X});
+locs(:,2) = cell2mat({a.chanlocs.Y});
+locs(:,3) = cell2mat({a.chanlocs.Z});
+locs_2D = mk_sensors_plane(locs,para);
+
+hp_new = handle(h_new3);
+h = title('Head in Head model', 'FontSize', 18); axis off;
+P = get(h,'Position'); set(h,'Position',[P(1) P(2)+0.03 P(3)]);
+showcs(aa, locs_2D, para, hp_new);
