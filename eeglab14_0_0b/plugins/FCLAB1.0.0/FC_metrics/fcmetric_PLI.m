@@ -1,5 +1,5 @@
 function outEEG = fcmetric_PLI(inEEG)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Usage:
 %
 %   >>  outEEG = fcmetric_PLI(inEEG);
@@ -55,7 +55,7 @@ function outEEG = fcmetric_PLI(inEEG)
 %               source. The same happens when the mean Df is equal to or 
 %               centered around 0 mod pi.
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mf = size(inEEG.FC.parameters.bands, 1);
 [m, ~, o] = size(inEEG.data);
