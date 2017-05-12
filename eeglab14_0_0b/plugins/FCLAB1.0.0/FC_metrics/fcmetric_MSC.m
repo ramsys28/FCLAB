@@ -1,8 +1,31 @@
-function outEEG=fcmetric_MSC(inEEG)
-[m1 n1]=size(inEEG.data);
+function outEEG = fcmetric_MSC(inEEG) 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Usage:
+%
+%   >>  outEEG = fcmetric_MSC(inEEG);
+%
+% Inputs:
+%           inEEG  - input EEG dataset
+%   
+%    
+% Outputs:
+%           outEEG  - output dataset
+%
+% Info:
+%           Computes the magnitude square coherence for each possible pair 
+%           of EEG channels and for every band as well.
+%
+% Mathematical background:
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+[m1 n1] = size(inEEG.data);
 mf = size(inEEG.FC.parameters.bands,1);
-outEEG=inEEG;
-disp('>> FCLAB: MSC is being computed...')
+outEEG = inEEG;
+disp('>> FCLAB: MSC is being computed...');
+
 for i1=1:m1
     i1
     for j1=i1:m1
