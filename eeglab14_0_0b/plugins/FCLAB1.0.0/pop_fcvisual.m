@@ -22,7 +22,7 @@ function varargout = pop_fcvisual(varargin)
 
 % Edit the above text to modify the response to help pop_fcvisual
 
-% Last Modified by GUIDE v2.5 12-May-2017 13:46:37
+% Last Modified by GUIDE v2.5 04-Sep-2017 14:17:42
           
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -69,11 +69,11 @@ for i=1:length(s)
     col=aa{1,2};
     colors{i,1}=col(1:end-2);
     clear aa col
-end;
-
-set(handles.popupmenu1, 'String', colors)
+end
+set(handles.popupmenu1, 'String', colors);
 % colormaps -- end
 
+set(gcf, 'units', 'normalized', 'outerposition', [0 0 1 1]);
 fieldnames=fields(a.FC);
 fieldnames(strcmp(fieldnames,'parameters'))=[];
 if isempty(fieldnames)
@@ -87,14 +87,17 @@ else
     hold all
     handles.axes1.XTick=[1:a.nbchan];
     chanlabels=[];
+    
     for i=1:a.nbchan
         chanlabels{i,1}=a.chanlocs(i).labels;
-    end;
+    end
+    
     handles.axes1.XTickLabel=chanlabels;
     handles.axes1.XTickLabelRotation=90;
     handles.axes1.Visible='on';
     handles.axes1.YTick=handles.axes1.XTick;
     handles.axes1.YTickLabel=chanlabels;
+    
     if ~isempty(a.chanlocs)
         ds.chanPairs=[];
         ds.connectStrength=[];
@@ -103,10 +106,10 @@ else
             for j=i+1:a.nbchan
                 ds.chanPairs=[ds.chanPairs; i j];
                 ds.connectStrength=[ds.connectStrength...
-                    a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix(i,j)];
-                
-            end;
-        end;
+                    a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix(i,j)]; 
+            end
+        end
+        
         handles.ds = ds;%!!!
         axes(handles.axes2);
         eval(['topoplot_connect(ds,a.chanlocs,fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
@@ -117,16 +120,11 @@ else
         locs(:,2)=cell2mat({a.chanlocs.Y});
         locs(:,3)=cell2mat({a.chanlocs.Z});
         locs_2D=mk_sensors_plane(locs,para);
-        %aa=imread('test.png');
-        %figure('Position',get(handles.axes5,'Position'))
         
-        %imshow(aa)
-        %sbplot(1,1,1,'ax',handles.axes5);
         hp=handles.uipanel2;
         showcs(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix,locs_2D,para,hp);
-
-        hp.Visible='on';
         
+        hp.Visible='on';
         axes(handles.axes7);
         colormap(handles.popupmenu1.String{handles.popupmenu1.Value});
         colorbar('south');
@@ -137,19 +135,15 @@ else
         handles.slider1.Value=handles.slider1.Min;
         handles.slider1.UserData=a;
         handles.edit1.String=num2str(handles.slider1.Value);
+        set(gcf, 'units', 'normalized', 'outerposition', [0 0 1 1]);
     else
         %%error need channels for topoplot
     end;
      
 end;
 
-
-
 % Update handles structure
 guidata(hObject, handles);
-
-
-
 
 
 %G = evalin('base', 'EEG.FC.Correlation.adj_matrix');
@@ -169,6 +163,7 @@ function varargout = pop_fcvisual_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 %varargout{1} = handles.output;
+set(gcf, 'units', 'normalized', 'outerposition', [0 0 1 1]);
 
 
 function edit1_Callback(hObject, eventdata, handles)
@@ -182,7 +177,6 @@ handles.slider1.Value=str2num(hObject.String);
 slider1_Callback(handles.slider1, eventdata, handles);
 guidata(hObject, handles);
 
-
 % --- Executes during object creation, after setting all properties.
 function edit1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to edit1 (see GCBO)
@@ -194,7 +188,6 @@ function edit1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 % --- Executes on selection change in popupmenu1.
 function popupmenu1_Callback(hObject, eventdata, handles)
@@ -242,7 +235,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
 % --- Executes on selection change in popupmenu2.
 function popupmenu2_Callback(hObject, eventdata, handles)
 % hObject    handle to popupmenu2 (see GCBO)
@@ -251,11 +243,10 @@ function popupmenu2_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu2 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu2
-contents = cellstr(get(hObject,'String'))
-a=varargin{1};
-axes(handles.axes1); 
+contents = cellstr(get(hObject,'String'));
+a = varargin{1};
+axes(handles.axes1);
 eval(['imagesc(double(a.FC.Correlation.' contents{get(hObject,'Value')} '.adj_matrix)); colormap(jet); colorbar;']);     
-
     
 % --- Executes during object creation, after setting all properties.
 function popupmenu2_CreateFcn(hObject, eventdata, handles)
@@ -269,9 +260,7 @@ function popupmenu2_CreateFcn(hObject, eventdata, handles)
 %set(hObject,'String',fieldnames(varargin))
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
-    
 end
-
 
 % --- Executes on mouse press over axes background.
 function axes1_ButtonDownFcn(hObject, eventdata, handles)
@@ -279,10 +268,9 @@ function axes1_ButtonDownFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-band=handles.popupmenu2.Value;
-figure('units','normalized','outerposition',[0 0 1 1])
+band = handles.popupmenu2.Value;
+% figure('units','normalized','outerposition',[0 0 1 1]);
 eval(['imagesc(double(a.FC.Correlation.' band '.adj_matrix)); colormap(jet); colorbar;']);
-
 
 % --- Executes on selection change in popupmenu3.
 function popupmenu3_Callback(hObject, eventdata, handles)
@@ -292,7 +280,6 @@ function popupmenu3_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu3 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu3
-
 
 % --- Executes during object creation, after setting all properties.
 function popupmenu3_CreateFcn(hObject, eventdata, handles)
@@ -305,7 +292,6 @@ function popupmenu3_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 % --- Executes on slider movement.
 function slider1_Callback(hObject, eventdata, handles)
@@ -379,7 +365,7 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % band = handles.popupmenu2.Value;
-figure('units','normalized','outerposition',[0.2 0.2 0.6 0.8]);
+h = figure('units','normalized','outerposition',[0.2 0.2 0.6 0.8]);
 aa = hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
 aa(aa<handles.slider1.Value) = 0;
 imagesc(aa, [-1,1]);
@@ -392,6 +378,7 @@ end
 set(gca, 'XTick', [1:a.nbchan], 'XTickLabel', chanlabels, 'XTickLabelRotation', 90);
 set(gca, 'YTick', [1:a.nbchan], 'YTickLabel', chanlabels);
 title('Adjacency matrix', 'FontSize', 18);
+set(h, 'color', [0.6430 0.7760 1.0000]);
 
 % --- Executes on button press in pushbutton3.
 function pushbutton3_Callback(hObject, eventdata, handles)
@@ -427,5 +414,15 @@ locs_2D = mk_sensors_plane(locs,para);
 
 hp_new = handle(h_new3);
 h = title('Head in Head model', 'FontSize', 18); axis off;
-P = get(h,'Position'); set(h,'Position',[P(1) P(2)+0.03 P(3)]);
+% P = get(h,'Position'); 
+% set(h,'Position',[P(1) P(2)+0.03 P(3)]);
+% set(h_new3, 'normalized', 'position', [0.1 0.1 0.8 0.1]);
+
 showcs(aa, locs_2D, para, hp_new);
+set(h_new3, 'color', [0.6430 0.7760 1.0000]);
+
+% --- Executes when figure1 is resized.
+function figure1_SizeChangedFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
