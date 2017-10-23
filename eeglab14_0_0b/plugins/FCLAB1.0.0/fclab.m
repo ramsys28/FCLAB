@@ -39,7 +39,7 @@ end
 outEEG=inEEG;
 fclab_dependences(); % check for dependences and download.
 
-if ~strcmp(inEEG.FC.parameters.metric, 'all');
+if ~strcmp(inEEG.FC.parameters.metric, 'all')
    eval(['outEEG=' inEEG.FC.parameters.metric '(inEEG);']);
 else
     eeglab_path = which('eeglab');

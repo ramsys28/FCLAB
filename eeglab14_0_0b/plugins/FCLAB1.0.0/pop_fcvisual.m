@@ -44,7 +44,7 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before pop_fcvisual is made visible.
+% --- Executes just before pop_fcvisual is made visible.a
 function pop_fcvisual_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
@@ -157,7 +157,7 @@ guidata(hObject, handles);
 %imagesc(double(G)); colormap(jet); colorbar;
 
 % UIWAIT makes pop_fcvisual wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+ uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
