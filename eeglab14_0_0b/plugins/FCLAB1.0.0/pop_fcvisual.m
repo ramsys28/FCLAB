@@ -137,10 +137,7 @@ else
         showcs(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix,locs_2D,para,hp);
         
         hp.Visible='on';
-        axes(handles.axes7);
-        colormap(handles.popupmenu1.String{handles.popupmenu1.Value});
-        colorbar('south');
-        set(gca, 'CLim', [-1 1]);
+
         
         handles.slider1.Min=min(min(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix));
         handles.slider1.Max=max(max(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix));
@@ -148,6 +145,12 @@ else
         handles.slider1.Value=handles.slider1.Min;
         handles.edit1.String=num2str(handles.slider1.Value);
         set(gcf, 'units', 'normalized', 'outerposition', [0 0 1 1]);
+                
+        axes(handles.axes7);
+        colormap(handles.popupmenu1.String{handles.popupmenu1.Value});
+        colorbar('south');
+        set(gca, 'CLim', [handles.slider1.Min handles.slider1.Max]);
+        handles.UserData=a;
     else
         %%error need channels for topoplot
     end;
@@ -238,6 +241,12 @@ if ~isempty(hObject.UserData.chanlocs)
     handles.slider1.Max=handles.slider1.Max-eps;
     handles.slider1.Value=handles.slider1.Min;
     handles.edit1.String=num2str(handles.slider1.Value);
+   
+    axes(handles.axes7);
+    colormap(['fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64)']);
+    colorbar('south');
+    set(gca, 'CLim', [handles.slider1.Min handles.slider1.Max]);
+    
 end
 guidata(hObject, handles);
 
@@ -261,11 +270,58 @@ function popupmenu2_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu2 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu2
-metrics = cellstr(get(hObject,'String'));
-bands = cellstrt(get(handles.popupmenu3,'String'));
-%a=varargin{1};
-axes(handles.axes1); 
-eval(['imagesc(double(a.FC.' metrics{get(hObject,'Value')} '.' bands '.adj_matrix)); colormap(jet); colorbar;']);     
+aa=hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
+aa(aa<handles.slider1.Value)=0;
+axes(handles.axes1);
+imagesc(aa);
+a=hObject.UserData;
+handles.axes1.XTick=[1:a.nbchan];
+chanlabels=[];
+for i=1:a.nbchan
+    chanlabels{i,1}=a.chanlocs(i).labels;
+end
+handles.axes1.XTickLabel=chanlabels;
+handles.axes1.XTickLabelRotation=90;
+handles.axes1.Visible='on';
+handles.axes1.YTick=handles.axes1.XTick;
+handles.axes1.YTickLabel=chanlabels;
+handles.edit1.String=num2str(handles.slider1.Value);
+
+ds.chanPairs=[];
+ds.connectStrength=[];
+for i=1:a.nbchan-1
+    for j=i+1:a.nbchan
+        if(aa(i,j)~=0)
+            ds.chanPairs=[ds.chanPairs; i j];
+            ds.connectStrength=[ds.connectStrength;aa(i,j)];
+        end
+    end
+end
+%ds.connectStrengthLimits=[-1 1];
+handles.ds = ds;%!!!
+
+axes(handles.axes2);
+eval(['topoplot_connect(ds,a.chanlocs,fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
+para.rot=90;
+locs(:,1)=cell2mat({a.chanlocs.X});
+locs(:,2)=cell2mat({a.chanlocs.Y});
+locs(:,3)=cell2mat({a.chanlocs.Z});
+locs_2D=mk_sensors_plane(locs,para);
+
+hp=handles.uipanel2;
+showcs(aa, locs_2D, para, hp);
+
+handles.slider1.Min=min(min(aa));
+handles.slider1.Max=max(max(aa));
+handles.slider1.Max=handles.slider1.Max-eps;
+handles.slider1.Value=handles.slider1.Min;
+handles.edit1.String=num2str(handles.slider1.Value);
+
+axes(handles.axes7);
+        colormap(['fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64)']);
+        colorbar('south');
+        set(gca, 'CLim', [handles.slider1.Min handles.slider1.Max]);
+        handles.UserData=a;
 
 % --- Executes during object creation, after setting all properties.
 function popupmenu2_CreateFcn(hObject, eventdata, handles)
@@ -302,7 +358,7 @@ function popupmenu3_Callback(hObject, eventdata, handles)
 aa=hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
 aa(aa<handles.slider1.Value)=0;
 axes(handles.axes1);
-imagesc(aa,[-1,1]);
+imagesc(aa);
 a=hObject.UserData;
 handles.axes1.XTick=[1:a.nbchan];
 chanlabels=[];
@@ -326,7 +382,7 @@ for i=1:a.nbchan-1
         end
     end
 end
-ds.connectStrengthLimits=[-1 1];
+%%ds.connectStrengthLimits=[-1 1];
 handles.ds = ds;%!!!
 
 axes(handles.axes2);
@@ -345,6 +401,12 @@ handles.slider1.Max=max(max(aa));
 handles.slider1.Max=handles.slider1.Max-eps;
 handles.slider1.Value=handles.slider1.Min;
 handles.edit1.String=num2str(handles.slider1.Value);
+
+axes(handles.axes7);
+        colormap(['fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64)']);
+        colorbar('south');
+        set(gca, 'CLim', [handles.slider1.Min handles.slider1.Max]);
+        handles.UserData=a;
     
 guidata(hObject, handles);
 
@@ -365,15 +427,15 @@ function slider1_Callback(hObject, eventdata, handles)
 % hObject    handle to slider1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-aa=hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
+aa=handles.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
 axes(handles.axes1);
 aa(aa<hObject.Value)=0;
 imagesc(aa,[-1,1]);
 a=hObject.UserData;
-handles.axes1.XTick=[1:a.nbchan];
+handles.axes1.XTick=[1:handles.UserData.nbchan];
 chanlabels=[];
-for i=1:a.nbchan
-    chanlabels{i,1}=a.chanlocs(i).labels;
+for i=1:handles.UserData.nbchan
+    chanlabels{i,1}=handles.UserData.chanlocs(i).labels;
 end;
 handles.axes1.XTickLabel=chanlabels;
 handles.axes1.XTickLabelRotation=90;
@@ -385,8 +447,8 @@ handles.edit1.String=num2str(hObject.Value);
 ds.chanPairs=[];
 ds.connectStrength=[];
 
-for i=1:a.nbchan-1
-    for j=i+1:a.nbchan
+for i=1:handles.UserData.nbchan-1
+    for j=i+1:handles.UserData.nbchan
         if(aa(i,j)~=0)
             ds.chanPairs=[ds.chanPairs; i j];
             ds.connectStrength=[ds.connectStrength;aa(i,j)];
@@ -396,11 +458,11 @@ end;
 ds.connectStrengthLimits=[-1 1];
 handles.ds = ds;%!!!
 axes(handles.axes2);
-eval(['topoplot_connect(ds,a.chanlocs,fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
+eval(['topoplot_connect(ds,handles.UserData.chanlocs,fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
 para.rot=90;
-locs(:,1)=cell2mat({a.chanlocs.X});
-locs(:,2)=cell2mat({a.chanlocs.Y});
-locs(:,3)=cell2mat({a.chanlocs.Z});
+locs(:,1)=cell2mat({handles.UserData.chanlocs.X});
+locs(:,2)=cell2mat({handles.UserData.chanlocs.Y});
+locs(:,3)=cell2mat({handles.UserData.chanlocs.Z});
 locs_2D=mk_sensors_plane(locs,para);
 
 hp=handles.uipanel2;
