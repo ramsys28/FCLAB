@@ -33,7 +33,7 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-function [outEEG, com] = pop_fclab(inEEG);
+function [outEEG, com] = pop_fclab(inEEG)
 
 % the command output is a hidden output that does not have to
 % be described in the header
@@ -55,9 +55,10 @@ metrics = [];
 for i = 1:length(metrics_file)
      metrics=strcat(metrics, strrep(strrep(metrics_file(i).name,'fcmetric_',''),'.m',''));
      metrics=strcat(metrics,'|');
-end;
+end
 metrics = metrics(1:end-1);
 
+% fieldnames(strcmp(fieldnames,'parameters'))=[];
 
 if nargin < 3
     g = [1 1 1];
@@ -129,13 +130,12 @@ else
             inEEG.FC.parameters.bands{k,1}=getfield(structout,fields{i});
             inEEG.FC.parameters.bands{k,2}=getfield(structout,fields{i+1});
             k=k+1;
-        end;
-    end;
-end;
+        end
+    end
+end
 
 
-
-    [outEEG, com] = fclab(inEEG);
+[outEEG, com] = fclab(inEEG);
 
     
 
@@ -153,9 +153,10 @@ return;
 
 % callback for the drop-down menu
 function popupCallback_drp(obj,event)
-    if obj.Value==1
+    if obj.Value==3
        %  handle = findobj('Tag', 'frb9');
        % handle.Visible='off';
+       msgbox('Plase note that this similarity measure might be influenced by volume conduction!', 'Notification', 'warn');
     end
 return;
 

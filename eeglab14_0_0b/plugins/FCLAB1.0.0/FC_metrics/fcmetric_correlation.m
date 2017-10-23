@@ -26,7 +26,7 @@ for i = 1:mf
     testEEG = inEEG;
     freq_range = str2num(inEEG.FC.parameters.bands{i,1});
     [testEEG, com, b] = pop_eegfiltnew(testEEG, freq_range(1));
-    [testEEG, com, b] = pop_eegfiltnew(testEEG, [],freq_range(2));
+    [testEEG, com, b] = pop_eegfiltnew(testEEG, [], freq_range(2));
     if (o == 1)
         temp_adj = corrcoef(testEEG.data');
     else

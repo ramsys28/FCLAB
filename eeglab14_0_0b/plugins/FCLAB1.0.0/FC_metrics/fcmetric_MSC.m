@@ -27,10 +27,8 @@ outEEG = inEEG;
 disp('>> FCLAB: MSC is being computed...');
 
 for i1 = 1:m1
-    i1
     for j1=i1:m1
         [Cxy F]=mscohere(inEEG.data(i1,:),inEEG.data(j1,:),50,1,[],inEEG.srate);
-        
         for bands=1:mf
             freq_range=str2num(inEEG.FC.parameters.bands{bands,1});
             for i=1:length(F)
