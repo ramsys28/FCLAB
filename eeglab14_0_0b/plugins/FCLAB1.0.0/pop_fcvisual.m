@@ -58,6 +58,7 @@ handles.pushbutton2.UserData=a;
 handles.popupmenu3.UserData=a;
 handles.pushbutton3.UserData=a;
 handles.pushbutton4.UserData=a;
+handles.slider1.UserData=a;
 % Choose default command line output for pop_fcvisual
 
 % colormaps -- start
@@ -94,6 +95,7 @@ else
     handles.popupmenu2.String=fieldnames;
     fieldnames_freq=fields(a.FC.(fieldnames{1}));
     handles.popupmenu3.String=fieldnames_freq;
+    
     axes(handles.axes1);
     imagesc(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix);
     hold all
@@ -118,7 +120,7 @@ else
             for j=i+1:a.nbchan
                 ds.chanPairs=[ds.chanPairs; i j];
                 ds.connectStrength=[ds.connectStrength...
-                    a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix(i,j)]; 
+                    a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix(i,j)];
             end
         end
         
@@ -146,6 +148,7 @@ else
         handles.slider1.Max=max(max(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix));
         handles.slider1.Max=handles.slider1.Max-eps;
         handles.slider1.Value=handles.slider1.Min;
+        
         handles.edit1.String=num2str(handles.slider1.Value);
         set(gcf, 'units', 'normalized', 'outerposition', [0 0 1 1]);
     else
@@ -215,7 +218,7 @@ colormap(gcf, eval(['fccolor_'...
 
 aa=hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
 aa(aa<handles.slider1.Value)=0;
-
+    
 if ~isempty(hObject.UserData.chanlocs)
     ds.chanPairs=[];
     ds.connectStrength=[];
@@ -232,13 +235,8 @@ if ~isempty(hObject.UserData.chanlocs)
     handles.ds = ds;%!!!    
     axes(handles.axes2);
     eval(['topoplot_connect(ds,hObject.UserData.chanlocs,fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
-    
-    handles.slider1.Min=min(min(aa));
-    handles.slider1.Max=max(max(aa));
-    handles.slider1.Max=handles.slider1.Max-eps;
-    handles.slider1.Value=handles.slider1.Min;
-    handles.edit1.String=num2str(handles.slider1.Value);
 end
+
 guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
@@ -338,12 +336,6 @@ locs_2D=mk_sensors_plane(locs,para);
 
 hp=handles.uipanel2;
 showcs(aa, locs_2D, para, hp);
-
-handles.slider1.Min=min(min(aa));
-handles.slider1.Max=max(max(aa));
-handles.slider1.Max=handles.slider1.Max-eps;
-handles.slider1.Value=handles.slider1.Min;
-handles.edit1.String=num2str(handles.slider1.Value);
     
 guidata(hObject, handles);
 
@@ -365,8 +357,8 @@ function slider1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 aa=hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
-axes(handles.axes1);
 aa(aa<hObject.Value)=0;
+axes(handles.axes1);
 imagesc(aa,[-1,1]);
 a=hObject.UserData;
 handles.axes1.XTick=[1:a.nbchan];

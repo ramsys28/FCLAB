@@ -127,18 +127,20 @@ else
         [f, xi] = ksdensity(local_measure_data);
         plot(xi,f, 'b'); grid on;
 
-        axes(handles.axes4); 
-        colormap(handles.popupmenu5.String{handles.popupmenu5.Value});
-        colorbar('south');
-        set(gca, 'CLim', [-1 1]);
-        axis off;
+%         colormap(eval([handles.popupmenu5.String{handles.popupmenu5.Value} '(64)']));
+%         h = colorbar('south'); set(h, 'ylim', [min(local_measure_data) max(local_measure_data)]);
+%         axis off;
 
         axes(handles.axes2);
         h = histogram(local_measure_data, 15); grid on;
         set(h, 'EdgeColor', 'k', 'FaceColor', 'b');
         
         axes(handles.axes3);
-        test(a.chanlocs, local_measure_data, eval(['fccolor_' handles.popupmenu5.String{handles.popupmenu5.Value} '(10)']));
+%         test(a.chanlocs, local_measure_data, eval(['fccolor_' handles.popupmenu5.String{handles.popupmenu5.Value} '(10)']));
+        topoplot(local_measure_data, a.chanlocs, 'conv', 'on', 'colormap', eval(['fccolor_' handles.popupmenu5.String{handles.popupmenu5.Value} '(64)']));
+        handles.axes3.Visible = 'off'; colorbar();
+        handles.axes3.XLim = [handles.axes3.XLim(1)-0.05 handles.axes3.XLim(2)+0.05];
+        handles.axes3.YLim = [handles.axes3.YLim(1)-0.05 handles.axes3.YLim(2)+0.05];
         
         global_measure = handles.popupmenu4.Value;
         if(global_measure <= 11)
@@ -155,6 +157,8 @@ else
     handles.edit4.String = std(local_measure_data);
     handles.edit5.String = global_measure_data;
 end
+
+handles.figure1.Color = [0.6431 0.7765 1.0000];
 
 % Update handles structure
 guidata(hObject, handles);
@@ -220,8 +224,11 @@ h = histogram(local_measure_data, 15); grid on;
 set(h, 'EdgeColor', 'k', 'FaceColor', 'b');
 
 axes(handles.axes3);
-test(hObject.UserData.chanlocs, local_measure_data, eval(['fccolor_' handles.popupmenu5.String{handles.popupmenu5.Value} '(10)']));
-        
+topoplot(local_measure_data, hObject.UserData.chanlocs, 'conv', 'on', 'colormap', eval(['fccolor_' handles.popupmenu5.String{handles.popupmenu5.Value} '(64)']));
+handles.axes3.Visible = 'off';  colorbar();
+handles.axes3.XLim = [handles.axes3.XLim(1)-0.05 handles.axes3.XLim(2)+0.05];
+handles.axes3.YLim = [handles.axes3.YLim(1)-0.05 handles.axes3.YLim(2)+0.05];
+
 handles.edit1.String = min(local_measure_data);
 handles.edit2.String = max(local_measure_data);
 handles.edit3.String = mean(local_measure_data);
@@ -270,8 +277,16 @@ axes(handles.axes2);
 h = histogram(local_measure_data, 15); grid on;
 set(h, 'EdgeColor', 'k', 'FaceColor', 'b');
 
+% axes(handles.axes4); 
+% colormap(eval([handles.popupmenu5.String{handles.popupmenu5.Value} '(64)']));
+% h = colorbar('south'); set(h, 'ylim', [min(local_measure_data) max(local_measure_data)]);
+% axis off;
+
 axes(handles.axes3);
-test(hObject.UserData.chanlocs, local_measure_data, eval(['fccolor_' handles.popupmenu5.String{handles.popupmenu5.Value} '(10)']));
+topoplot(local_measure_data, hObject.UserData.chanlocs, 'conv', 'on', 'colormap', eval(['fccolor_' handles.popupmenu5.String{handles.popupmenu5.Value} '(64)']));
+handles.axes3.Visible = 'off'; colorbar();
+handles.axes3.XLim = [handles.axes3.XLim(1)-0.05 handles.axes3.XLim(2)+0.05];
+handles.axes3.YLim = [handles.axes3.YLim(1)-0.05 handles.axes3.YLim(2)+0.05];
 
 handles.edit1.String = min(local_measure_data);
 handles.edit2.String = max(local_measure_data);
@@ -453,6 +468,7 @@ end
 plot(xi,f, 'b'); grid on;
 set(h, 'color', [0.6430 0.7760 1.0000]);
 
+
 % --- Executes on button press in pushbutton2.
 function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
@@ -470,7 +486,6 @@ h1 = histogram(local_measure_data, 15); grid on;
 set(h1, 'EdgeColor', 'k', 'FaceColor', 'b');
 set(h, 'color', [0.6430 0.7760 1.0000]);
 
-
 % --- Executes on button press in pushbutton3.
 function pushbutton3_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton3 (see GCBO)
@@ -484,9 +499,13 @@ if(handles.popupmenu3.Value <= 5)
 else
     local_measure_data = hObject.UserData.FC.(fieldname).(fieldname_freqband).MST_params.local.(handles.popupmenu3.String{handles.popupmenu3.Value}); %retrieve local measure
 end
-test(hObject.UserData.chanlocs, local_measure_data, eval(['fccolor_' handles.popupmenu5.String{handles.popupmenu5.Value} '(10)']));
 
+topoplot(local_measure_data, hObject.UserData.chanlocs, 'conv', 'on', 'colormap', eval(['fccolor_' handles.popupmenu5.String{handles.popupmenu5.Value} '(64)']));
+% handles.axes3.Visible = 'off'; colorbar();
+% handles.axes3.XLim = [handles.axes3.XLim(1)-0.05 handles.axes3.XLim(2)+0.05];
+% handles.axes3.YLim = [handles.axes3.YLim(1)-0.05 handles.axes3.YLim(2)+0.05];
 
+        
 % --- Executes on selection change in popupmenu5.
 function popupmenu5_Callback(hObject, eventdata, handles)
 % hObject    handle to popupmenu5 (see GCBO)
@@ -503,7 +522,12 @@ if(handles.popupmenu3.Value <= 5)
 else
     local_measure_data = hObject.UserData.FC.(fieldname).(fieldname_freqband).MST_params.local.(handles.popupmenu3.String{handles.popupmenu3.Value}); %retrieve local measure
 end
-test(hObject.UserData.chanlocs, local_measure_data, eval(['fccolor_' hObject.String{hObject.Value} '(10)']));
+
+axes(handles.axes3);
+topoplot(local_measure_data, hObject.UserData.chanlocs, 'conv', 'on', 'colormap', eval(['fccolor_' hObject.String{hObject.Value} '(64)']));
+handles.axes3.Visible = 'off'; colorbar();
+handles.axes3.XLim = [handles.axes3.XLim(1)-0.05 handles.axes3.XLim(2)+0.05];
+handles.axes3.YLim = [handles.axes3.YLim(1)-0.05 handles.axes3.YLim(2)+0.05];
 
 % --- Executes during object creation, after setting all properties.
 function popupmenu5_CreateFcn(hObject, eventdata, handles)
