@@ -251,10 +251,11 @@ function popupmenu2_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu2 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu2
-contents = cellstr(get(hObject,'String'))
-a=varargin{1};
+metrics = cellstr(get(hObject,'String'));
+bands = cellstrt(get(handles.popupmenu3,'String'));
+%a=varargin{1};
 axes(handles.axes1); 
-eval(['imagesc(double(a.FC.Correlation.' contents{get(hObject,'Value')} '.adj_matrix)); colormap(jet); colorbar;']);     
+eval(['imagesc(double(a.FC.' metrics{get(hObject,'Value')} '.' bands '.adj_matrix)); colormap(jet); colorbar;']);     
 
     
 % --- Executes during object creation, after setting all properties.
