@@ -33,7 +33,7 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-function [outEEG, com] = pop_fcgraph(inEEG);
+function [outEEG, com] = pop_fcgraph(inEEG)
 
 % the command output is a hidden output that does not have to
 % be described in the header
@@ -70,6 +70,12 @@ if nargin < 3
        inEEG.FC.graph_prop.metric=matrices{structout.metric};
        
        outEEG=fcgraph(inEEG);
+%        tempEEG.FC.correlation.Delta
+%        if(inEEG.FC.graph_prop.mst)
+%            tempEEG=fclab_MST(tempEEG);
+%        end
+%        outEEG = tempEEG;
+%        clear tempEEG;
 else
     error('Too many inputs');
 end;
@@ -118,14 +124,13 @@ if handle(1).Value==1
     handle(1).Value=0;
     popupCallback_threshquest(handle(1),event)
 else
-    
     popupCallback_threshquest(handle(1),event)
-end;
-return;
+end
+return
 
 function popupCallback_mst(obj,event)
 handle = findobj('Tag', 'binarize');
 if handle(1).Value==1
     handle(1).Value=0;
-end;
-return;
+end
+return

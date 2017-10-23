@@ -55,8 +55,9 @@ function pop_fcvisual_OpeningFcn(hObject, eventdata, handles, varargin)
 a=varargin{1};
 handles.popupmenu1.UserData=a;
 handles.pushbutton2.UserData=a;
-handles.pushbutton3.UserData=a; %!!!
-handles.pushbutton4.UserData=a; %!!!
+handles.popupmenu3.UserData=a;
+handles.pushbutton3.UserData=a;
+handles.pushbutton4.UserData=a;
 % Choose default command line output for pop_fcvisual
 
 % colormaps -- start
@@ -74,8 +75,19 @@ set(handles.popupmenu1, 'String', colors);
 % colormaps -- end
 
 set(gcf, 'units', 'normalized', 'outerposition', [0 0 1 1]);
-fieldnames=fields(a.FC);
-fieldnames(strcmp(fieldnames,'parameters'))=[];
+fieldnames = fields(a.FC);
+% fieldnames(strcmp(fieldnames,'parameters'))=[];
+
+%maintain only those fields that are related to the fcmetrics
+metrics_file = dir([eeglab_path 'plugins/FCLAB1.0.0/FC_metrics/fcmetric_*.m']);
+
+for i = 1:length(metrics_file)
+    measure_full = metrics_file(i,:).name;
+    fcmetrics{i} = measure_full(10:end-2);
+end
+
+fieldnames = intersect(fields(a.FC), fcmetrics);
+
 if isempty(fieldnames)
     error('FCLAB: Compute first a connectivity matrix')
 else
@@ -129,11 +141,11 @@ else
         colormap(handles.popupmenu1.String{handles.popupmenu1.Value});
         colorbar('south');
         set(gca, 'CLim', [-1 1]);
+        
         handles.slider1.Min=min(min(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix));
         handles.slider1.Max=max(max(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix));
         handles.slider1.Max=handles.slider1.Max-eps;
         handles.slider1.Value=handles.slider1.Min;
-        handles.slider1.UserData=a;
         handles.edit1.String=num2str(handles.slider1.Value);
         set(gcf, 'units', 'normalized', 'outerposition', [0 0 1 1]);
     else
@@ -213,14 +225,20 @@ if ~isempty(hObject.UserData.chanlocs)
             if(aa(i,j)~=0)
                 ds.chanPairs=[ds.chanPairs; i j];
                 ds.connectStrength=[ds.connectStrength;aa(i,j)];
-            end;
-        end;
-    end;
+            end
+        end
+    end
     
     handles.ds = ds;%!!!    
     axes(handles.axes2);
     eval(['topoplot_connect(ds,hObject.UserData.chanlocs,fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
-end;
+    
+    handles.slider1.Min=min(min(aa));
+    handles.slider1.Max=max(max(aa));
+    handles.slider1.Max=handles.slider1.Max-eps;
+    handles.slider1.Value=handles.slider1.Min;
+    handles.edit1.String=num2str(handles.slider1.Value);
+end
 guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
@@ -243,11 +261,11 @@ function popupmenu2_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu2 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu2
-contents = cellstr(get(hObject,'String'));
-a = varargin{1};
-axes(handles.axes1);
-eval(['imagesc(double(a.FC.Correlation.' contents{get(hObject,'Value')} '.adj_matrix)); colormap(jet); colorbar;']);     
-    
+% contents = cellstr(get(hObject,'String'));
+% a = varargin{1};
+% axes(handles.axes1);
+% eval(['imagesc(double(a.FC.Correlation.' contents{get(hObject,'Value')} '.adj_matrix)); colormap(jet); colorbar;']);     
+
 % --- Executes during object creation, after setting all properties.
 function popupmenu2_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to popupmenu2 (see GCBO)
@@ -258,9 +276,9 @@ function popupmenu2_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 
 %set(hObject,'String',fieldnames(varargin))
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
+% if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+%     set(hObject,'BackgroundColor','white');
+% end
 
 % --- Executes on mouse press over axes background.
 function axes1_ButtonDownFcn(hObject, eventdata, handles)
@@ -268,9 +286,9 @@ function axes1_ButtonDownFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-band = handles.popupmenu2.Value;
-% figure('units','normalized','outerposition',[0 0 1 1]);
-eval(['imagesc(double(a.FC.Correlation.' band '.adj_matrix)); colormap(jet); colorbar;']);
+% band = handles.popupmenu2.Value;
+% % figure('units','normalized','outerposition',[0 0 1 1]);
+% eval(['imagesc(double(a.FC.Correlation.' band '.adj_matrix)); colormap(jet); colorbar;']);
 
 % --- Executes on selection change in popupmenu3.
 function popupmenu3_Callback(hObject, eventdata, handles)
@@ -280,6 +298,54 @@ function popupmenu3_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu3 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu3
+aa=hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
+aa(aa<handles.slider1.Value)=0;
+axes(handles.axes1);
+imagesc(aa,[-1,1]);
+a=hObject.UserData;
+handles.axes1.XTick=[1:a.nbchan];
+chanlabels=[];
+for i=1:a.nbchan
+    chanlabels{i,1}=a.chanlocs(i).labels;
+end
+handles.axes1.XTickLabel=chanlabels;
+handles.axes1.XTickLabelRotation=90;
+handles.axes1.Visible='on';
+handles.axes1.YTick=handles.axes1.XTick;
+handles.axes1.YTickLabel=chanlabels;
+handles.edit1.String=num2str(handles.slider1.Value);
+
+ds.chanPairs=[];
+ds.connectStrength=[];
+for i=1:a.nbchan-1
+    for j=i+1:a.nbchan
+        if(aa(i,j)~=0)
+            ds.chanPairs=[ds.chanPairs; i j];
+            ds.connectStrength=[ds.connectStrength;aa(i,j)];
+        end
+    end
+end
+ds.connectStrengthLimits=[-1 1];
+handles.ds = ds;%!!!
+
+axes(handles.axes2);
+eval(['topoplot_connect(ds,a.chanlocs,fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64));']);
+para.rot=90;
+locs(:,1)=cell2mat({a.chanlocs.X});
+locs(:,2)=cell2mat({a.chanlocs.Y});
+locs(:,3)=cell2mat({a.chanlocs.Z});
+locs_2D=mk_sensors_plane(locs,para);
+
+hp=handles.uipanel2;
+showcs(aa, locs_2D, para, hp);
+
+handles.slider1.Min=min(min(aa));
+handles.slider1.Max=max(max(aa));
+handles.slider1.Max=handles.slider1.Max-eps;
+handles.slider1.Value=handles.slider1.Min;
+handles.edit1.String=num2str(handles.slider1.Value);
+    
+guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
 function popupmenu3_CreateFcn(hObject, eventdata, handles)
@@ -298,7 +364,6 @@ function slider1_Callback(hObject, eventdata, handles)
 % hObject    handle to slider1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 aa=hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
 axes(handles.axes1);
 aa(aa<hObject.Value)=0;
@@ -339,6 +404,7 @@ locs_2D=mk_sensors_plane(locs,para);
 
 hp=handles.uipanel2;
 showcs(aa,locs_2D,para,hp);
+
 guidata(hObject, handles);
 
 

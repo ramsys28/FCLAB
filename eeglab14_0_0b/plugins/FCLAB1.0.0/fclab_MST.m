@@ -24,24 +24,24 @@ tic;
 [MST_net.links, MST_net.weights] = minimal_spanning_tree(1./Matrix);
 
 %Compute Degree of every node
-MST_params.DEG = (degrees_und(MST_net.Kruskal))';
-MST_params.DEG = MST_params.DEG./(n-1); %normalize per Subject
+MST_params.local.DEG_MST = (degrees_und(MST_net.Kruskal))';
+MST_params.local.DEG_MST = MST_params.local.DEG_MST./(n-1); %normalize per Subject
 
 %Compute Betweenness centrality of every node
-MST_params.BC = betweenness_wei(MST_net.Kruskal);
-MST_params.BC = MST_params.BC./((n-1)*(n-2));
+MST_params.local.BC_MST = betweenness_wei(MST_net.Kruskal);
+MST_params.local.BC_MST = MST_params.local.BC_MST./((n-1)*(n-2));
 
 %Compute Eccentricity of every node, given edges and corresponding weights
 E = [MST_net.links MST_net.weights];
-[MST_params.ECC(:,1), MST_params.rad, MST_params.diam, ~, ~] = grEccentricity(E);
-MST_params.ECC = MST_params.ECC./MST_params.diam;
+[MST_params.local.ECC_MST(:,1), MST_params.global.rad_MST, MST_params.global.diam_MST, ~, ~] = grEccentricity(E);
+MST_params.local.ECC_MST = MST_params.local.ECC_MST./MST_params.global.diam_MST;
 
 %Compute some MST global metrics
-MST_params.leaves = max(size(leaf_nodes(MST_net.Kruskal)));
-MST_params.leaf_fraction = max(size(leaf_nodes(MST_net.Kruskal)))/(n-1);
-MST_params.Th = treeHierarchy(MST_params.leaves, n-1, max(MST_params.BC));
-MST_params.DEGcor = pearson(MST_net.Kruskal);
-MST_params.kappa = kappa(MST_params.DEG);
+MST_params.global.leaves_MST = max(size(leaf_nodes(MST_net.Kruskal)));
+MST_params.global.leaf_fraction_MST = max(size(leaf_nodes(MST_net.Kruskal)))/(n-1);
+MST_params.global.Th_MST = treeHierarchy(MST_params.global.leaves_MST, n-1, max(MST_params.local.BC_MST));
+MST_params.global.DEGcor_MST = pearson(MST_net.Kruskal);
+MST_params.global.kappa_MST = kappa(MST_params.local.DEG_MST);
 timer = toc;
 disp(['>> fclab_MST: Elapsed time for ', band_ID, ' band = ', num2str(timer), ' sec']);
 disp(' ');
