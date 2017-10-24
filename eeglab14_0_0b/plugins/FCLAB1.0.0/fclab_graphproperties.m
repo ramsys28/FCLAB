@@ -1,6 +1,6 @@
 function struct=fclab_graphproperties(W, band_ID)
 
-if ~issymmetric(W)
+if issymmetric(W)
     directed=0;
 else
     directed=1;
@@ -25,17 +25,24 @@ return;
 function s=wu(C)
 %% QUESTION: WHAT WE DO WITH COMPLEX NUMBERS?
 s.global.assortativity=assortativity_wei(C,0);
-s.length_matrix = weight_conversion(C, 'lengths');
+% s.length_matrix = weight_conversion(C, 'lengths');
+
+A = C;
+B = C > 0;
+A(B) = 1./C(B);
+s.length_matrix = A;
+
 s.distance = distance_wei(s.length_matrix); %distance matrix
 s.nodal.BC=betweenness_wei(s.length_matrix);
 s.nodal.BCnorm=betweenness_wei(s.length_matrix)./((size(C,1)-1)*(size(C,1)-2));
 [s.global.CPL,s.global.GE,s.nodal.ECC,s.global.radius,s.global.diameter] = ...
     charpath(s.distance);
 s.nodal.CC=clustering_coef_wu(C);
-s.gobal.DEN=density_und(C);
-%[s.gobal.GEdiff,s.edge.Ediff] = diffusion_efficiency(C); problem check
+s.global.DEN=density_und(C);
+%[s.global.GEdiff,s.edge.Ediff] = diffusion_efficiency(C); problem check
 s.edge.EBC = edge_betweenness_wei(C);
 s.local.LE=real(efficiency_wei(C,1));
+% s.global.GE2=real(efficiency_wei(C,0));
 s.local.EVC=eigenvector_centrality_und(C);
 [s.edge.Erange,s.global.eta,s.edge.Eshort,s.global.fs]=erange(C);
 [s.wlaks.Wq,s.wlaks.twalk,s.wlaks.wlq] = findwalks(C);
