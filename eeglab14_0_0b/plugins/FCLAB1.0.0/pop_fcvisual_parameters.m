@@ -22,7 +22,7 @@ function varargout = pop_fcvisual_parameters(varargin)
 
 % Edit the above text to modify the response to help pop_fcvisual_parameters
 
-% Last Modified by GUIDE v2.5 22-Oct-2017 01:32:09
+% Last Modified by GUIDE v2.5 23-Oct-2017 20:54:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,8 +59,10 @@ handles.popupmenu1.UserData=a;
 handles.popupmenu2.UserData=a;
 handles.popupmenu3.UserData=a;
 handles.popupmenu4.UserData=a;
+handles.popupmenu5.UserData=a;
 handles.pushbutton1.UserData=a;
 handles.pushbutton2.UserData=a;
+handles.pushbutton3.UserData=a;
 % Choose default command line output for pop_fcvisual
 
 % colormaps -- start
@@ -84,6 +86,16 @@ for i = 1:length(metrics_file)
 end
 
 fieldnames = intersect(fields(a.FC), fcmetrics);
+
+s=dir(fullfile(eeglab_path,'plugins','FCLAB1.0.0','FC_colormap','fccolor*.m'));
+colors=[];
+for i=1:length(s)
+    aa=strsplit(s(i).name,'_');
+    col=aa{1,2};
+    colors{i,1}=col(1:end-2);
+    clear aa col;
+end
+set(handles.popupmenu5, 'String', colors);
 
 if isempty(fieldnames)
     error('FCLAB: Compute first a connectivity matrix!');
@@ -114,17 +126,29 @@ else
         
         [f, xi] = ksdensity(local_measure_data);
         plot(xi,f, 'b'); grid on;
-        
+
+%         colormap(eval([handles.popupmenu5.String{handles.popupmenu5.Value} '(64)']));
+%         h = colorbar('south'); set(h, 'ylim', [min(local_measure_data) max(local_measure_data)]);
+%         axis off;
+
         axes(handles.axes2);
         h = histogram(local_measure_data, 15); grid on;
         set(h, 'EdgeColor', 'k', 'FaceColor', 'b');
+        
+        axes(handles.axes3);
+%         test(a.chanlocs, local_measure_data, eval(['fccolor_' handles.popupmenu5.String{handles.popupmenu5.Value} '(10)']));
+        topoplot(local_measure_data, a.chanlocs, 'conv', 'on', 'colormap', eval(['fccolor_' handles.popupmenu5.String{handles.popupmenu5.Value} '(64)']));
+        handles.axes3.Visible = 'off'; colorbar();
+        handles.axes3.XLim = [handles.axes3.XLim(1)-0.05 handles.axes3.XLim(2)+0.05];
+        handles.axes3.YLim = [handles.axes3.YLim(1)-0.05 handles.axes3.YLim(2)+0.05];
         
         global_measure = handles.popupmenu4.Value;
         if(global_measure <= 11)
             global_measure_data = a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix_GP.global.(fieldnames_global_params{global_measure});
         else
             global_measure_data = a.FC.(fieldnames{1}).(fieldnames_freq{1}).MST_params.global.(fieldnames_global_MST_params{global_measure});
-        end 
+        end
+
     end
     
     handles.edit1.String = min(local_measure_data);
@@ -133,6 +157,8 @@ else
     handles.edit4.String = std(local_measure_data);
     handles.edit5.String = global_measure_data;
 end
+
+handles.figure1.Color = [0.6431 0.7765 1.0000];
 
 % Update handles structure
 guidata(hObject, handles);
@@ -197,6 +223,12 @@ axes(handles.axes2);
 h = histogram(local_measure_data, 15); grid on;
 set(h, 'EdgeColor', 'k', 'FaceColor', 'b');
 
+axes(handles.axes3);
+topoplot(local_measure_data, hObject.UserData.chanlocs, 'conv', 'on', 'colormap', eval(['fccolor_' handles.popupmenu5.String{handles.popupmenu5.Value} '(64)']));
+handles.axes3.Visible = 'off';  colorbar();
+handles.axes3.XLim = [handles.axes3.XLim(1)-0.05 handles.axes3.XLim(2)+0.05];
+handles.axes3.YLim = [handles.axes3.YLim(1)-0.05 handles.axes3.YLim(2)+0.05];
+
 handles.edit1.String = min(local_measure_data);
 handles.edit2.String = max(local_measure_data);
 handles.edit3.String = mean(local_measure_data);
@@ -244,6 +276,17 @@ plot(xi,f, 'b'); grid on;
 axes(handles.axes2);
 h = histogram(local_measure_data, 15); grid on;
 set(h, 'EdgeColor', 'k', 'FaceColor', 'b');
+
+% axes(handles.axes4); 
+% colormap(eval([handles.popupmenu5.String{handles.popupmenu5.Value} '(64)']));
+% h = colorbar('south'); set(h, 'ylim', [min(local_measure_data) max(local_measure_data)]);
+% axis off;
+
+axes(handles.axes3);
+topoplot(local_measure_data, hObject.UserData.chanlocs, 'conv', 'on', 'colormap', eval(['fccolor_' handles.popupmenu5.String{handles.popupmenu5.Value} '(64)']));
+handles.axes3.Visible = 'off'; colorbar();
+handles.axes3.XLim = [handles.axes3.XLim(1)-0.05 handles.axes3.XLim(2)+0.05];
+handles.axes3.YLim = [handles.axes3.YLim(1)-0.05 handles.axes3.YLim(2)+0.05];
 
 handles.edit1.String = min(local_measure_data);
 handles.edit2.String = max(local_measure_data);
@@ -425,6 +468,7 @@ end
 plot(xi,f, 'b'); grid on;
 set(h, 'color', [0.6430 0.7760 1.0000]);
 
+
 % --- Executes on button press in pushbutton2.
 function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
@@ -441,3 +485,58 @@ end
 h1 = histogram(local_measure_data, 15); grid on;
 set(h1, 'EdgeColor', 'k', 'FaceColor', 'b');
 set(h, 'color', [0.6430 0.7760 1.0000]);
+
+% --- Executes on button press in pushbutton3.
+function pushbutton3_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+h = figure('units','normalized','outerposition',[0.2 0.2 0.6 0.8]);
+fieldname = handles.popupmenu1.String{handles.popupmenu1.Value}; %retrieve similarity measure
+fieldname_freqband = handles.popupmenu2.String{handles.popupmenu2.Value}; %retrieve band
+if(handles.popupmenu3.Value <= 5)
+    local_measure_data = hObject.UserData.FC.(fieldname).(fieldname_freqband).adj_matrix_GP.local.(handles.popupmenu3.String{handles.popupmenu3.Value}); %retrieve local measure
+else
+    local_measure_data = hObject.UserData.FC.(fieldname).(fieldname_freqband).MST_params.local.(handles.popupmenu3.String{handles.popupmenu3.Value}); %retrieve local measure
+end
+
+topoplot(local_measure_data, hObject.UserData.chanlocs, 'conv', 'on', 'colormap', eval(['fccolor_' handles.popupmenu5.String{handles.popupmenu5.Value} '(64)']));
+% handles.axes3.Visible = 'off'; colorbar();
+% handles.axes3.XLim = [handles.axes3.XLim(1)-0.05 handles.axes3.XLim(2)+0.05];
+% handles.axes3.YLim = [handles.axes3.YLim(1)-0.05 handles.axes3.YLim(2)+0.05];
+
+        
+% --- Executes on selection change in popupmenu5.
+function popupmenu5_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu5 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu5
+colormap(gcf, eval(['fccolor_' hObject.String{hObject.Value} '(64);']));
+fieldname = handles.popupmenu1.String{handles.popupmenu1.Value}; %retrieve similarity measure
+fieldname_freqband = handles.popupmenu2.String{handles.popupmenu2.Value}; %retrieve band
+if(handles.popupmenu3.Value <= 5)
+    local_measure_data = hObject.UserData.FC.(fieldname).(fieldname_freqband).adj_matrix_GP.local.(handles.popupmenu3.String{handles.popupmenu3.Value}); %retrieve local measure
+else
+    local_measure_data = hObject.UserData.FC.(fieldname).(fieldname_freqband).MST_params.local.(handles.popupmenu3.String{handles.popupmenu3.Value}); %retrieve local measure
+end
+
+axes(handles.axes3);
+topoplot(local_measure_data, hObject.UserData.chanlocs, 'conv', 'on', 'colormap', eval(['fccolor_' hObject.String{hObject.Value} '(64)']));
+handles.axes3.Visible = 'off'; colorbar();
+handles.axes3.XLim = [handles.axes3.XLim(1)-0.05 handles.axes3.XLim(2)+0.05];
+handles.axes3.YLim = [handles.axes3.YLim(1)-0.05 handles.axes3.YLim(2)+0.05];
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu5_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

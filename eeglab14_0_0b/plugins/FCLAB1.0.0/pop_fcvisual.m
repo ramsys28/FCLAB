@@ -58,6 +58,7 @@ handles.pushbutton2.UserData=a;
 handles.popupmenu3.UserData=a;
 handles.pushbutton3.UserData=a;
 handles.pushbutton4.UserData=a;
+handles.slider1.UserData=a;
 % Choose default command line output for pop_fcvisual
 
 % colormaps -- start
@@ -94,6 +95,7 @@ else
     handles.popupmenu2.String=fieldnames;
     fieldnames_freq=fields(a.FC.(fieldnames{1}));
     handles.popupmenu3.String=fieldnames_freq;
+    
     axes(handles.axes1);
     imagesc(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix);
     hold all
@@ -118,7 +120,7 @@ else
             for j=i+1:a.nbchan
                 ds.chanPairs=[ds.chanPairs; i j];
                 ds.connectStrength=[ds.connectStrength...
-                    a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix(i,j)]; 
+                    a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix(i,j)];
             end
         end
         
@@ -143,6 +145,7 @@ else
         handles.slider1.Max=max(max(a.FC.(fieldnames{1}).(fieldnames_freq{1}).adj_matrix));
         handles.slider1.Max=handles.slider1.Max-eps;
         handles.slider1.Value=handles.slider1.Min;
+        
         handles.edit1.String=num2str(handles.slider1.Value);
         set(gcf, 'units', 'normalized', 'outerposition', [0 0 1 1]);
                 
@@ -218,7 +221,7 @@ colormap(gcf, eval(['fccolor_'...
 
 aa=hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
 aa(aa<handles.slider1.Value)=0;
-
+    
 if ~isempty(hObject.UserData.chanlocs)
     ds.chanPairs=[];
     ds.connectStrength=[];
@@ -248,6 +251,7 @@ if ~isempty(hObject.UserData.chanlocs)
     set(gca, 'CLim', [handles.slider1.Min handles.slider1.Max]);
     
 end
+
 guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
@@ -430,6 +434,7 @@ function slider1_Callback(hObject, eventdata, handles)
 aa=handles.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
 axes(handles.axes1);
 aa(aa<hObject.Value)=0;
+axes(handles.axes1);
 imagesc(aa,[-1,1]);
 a=hObject.UserData;
 handles.axes1.XTick=[1:handles.UserData.nbchan];
