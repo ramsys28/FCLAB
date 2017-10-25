@@ -52,7 +52,7 @@ eeglab_path = which('eeglab');
 eeglab_path = strrep(eeglab_path,'eeglab.m','');
 metrics_file = dir([eeglab_path 'plugins/FCLAB1.0.0/FC_metrics/fcmetric_*.m']);
 metrics = [];
-for i = 1:length(metrics_file)
+for i = length(metrics_file):-1:1
      metrics=strcat(metrics, strrep(strrep(metrics_file(i).name,'fcmetric_',''),'.m',''));
      metrics=strcat(metrics,'|');
 end
@@ -153,7 +153,7 @@ return;
 
 % callback for the drop-down menu
 function popupCallback_drp(obj,event)
-    if obj.Value==3
+    if ((obj.Value==3) || (obj.Value==5))
        %  handle = findobj('Tag', 'frb9');
        % handle.Visible='off';
        msgbox('Plase note that this similarity measure might be influenced by volume conduction!', 'Notification', 'warn');
