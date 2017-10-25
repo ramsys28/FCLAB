@@ -41,9 +41,10 @@ function [outEEG, com] = pop_fcgraph(inEEG)
 com = ''; % this initialization ensure that the function will return something
           % if the user press the cancel button            
 
-temEEG.FC = rmfield(inEEG.FC,'parameters');
-matrices=fieldnames(temEEG.FC);
+temEEG.FC = rmfield(inEEG.FC,{'parameters', 'graph_prop'});
+matrices = fieldnames(temEEG.FC);
 clear temEEG;
+
 if nargin < 3
     g = [1 1];
     geometry = { [g] [g 1] [g 1] [g 1]};
@@ -51,14 +52,14 @@ if nargin < 3
       { 'Style', 'text', 'string', 'Choose FC matrix', 'fontweight', 'bold' } ...
       { 'Style', 'popupmenu', 'string', matrices 'tag' 'metric'}...
       { 'Style', 'checkbox', 'string' 'Threshold?' 'value' 0 'tag' 'threshold' 'Callback', @popupCallback_threshquest} ...
-      { 'Style', 'checkbox', 'string' 'MST' 'value' 0 'tag' 'mst' 'Callback', @popupCallback_mst}...
+      { 'Style', 'checkbox', 'string' 'MST?' 'value' 0 'tag' 'mst'}...
       { 'Style', 'checkbox', 'string' '+/-' 'value' 0 'tag' 'plus_minus' 'Callback', @popupCallback_plusminus} ...
       { 'Style', 'text', 'string', 'Absolute Threshold', 'visible' 'off' 'tag' 'absthr_label'  } ...
       { 'Style', 'edit', 'string', '' 'tag' 'absthr' 'visible' 'off' } ...
       { 'Style', 'checkbox', 'string' 'Symmetrize?' 'value' 0 'tag' 'symmetrize'} ...
       { 'Style', 'text', 'string', 'Proportional Threshold (%)', 'visible' 'off' 'tag' 'prop_label'  } ...
       { 'Style', 'edit', 'string', '' 'tag' 'propthr' 'visible' 'off' } ...
-      { 'Style', 'checkbox', 'string' 'Binarize?' 'visible' 'on' 'value' 0 'tag' 'binarize' } ...
+      { 'Style', 'checkbox', 'string' 'Binarize?' 'value' 0 'tag' 'binarize' 'Callback', @popupCallback_binarize} ...
       };
  
       [ tmp1 tmp2 strhalt structout ] = inputgui(geometry, uilist, ...
@@ -68,22 +69,15 @@ if nargin < 3
        clear inEEG.FC.graph_prop.metric
        inEEG.FC.graph_prop.metric=matrices{structout.metric};
        
-       outEEG=fcgraph(inEEG);
-%        tempEEG.FC.correlation.Delta
-%        if(inEEG.FC.graph_prop.mst)
-%            tempEEG=fclab_MST(tempEEG);
-%        end
-%        outEEG = tempEEG;
-%        clear tempEEG;
+       outEEG = fcgraph(inEEG);
 else
     error('Too many inputs');
-end;
+end
 
 
 % return the string command
 % -------------------------
 com = sprintf('pop_fcgraph( %s);', inputname(1));
-
 
 return
 
@@ -101,7 +95,7 @@ function popupCallback_threshquest(obj,event)
        handle = findobj('Tag', 'binarize');
        handle(1).Visible='on';
        handle = findobj('Tag', 'plus_minus');
-       handle(1).Value=0;
+       handle(1).Value = 0;
     else
        handle = findobj('Tag', 'absthr');
        handle(1).Visible='off';
@@ -112,24 +106,21 @@ function popupCallback_threshquest(obj,event)
        handle = findobj('Tag', 'prop_label');
        handle(1).Visible='off';
        handle = findobj('Tag', 'binarize');
-       handle(1).Visible='off';
+       handle(1).Value = 0;
     end
 return
 
-
-function popupCallback_plusminus(obj,event)
+function popupCallback_plusminus(obj, event)
 handle = findobj('Tag', 'threshold');
-if handle(1).Value==1
-    handle(1).Value=0;
-    popupCallback_threshquest(handle(1),event)
+if handle(1).Value == 1
+    handle(1).Value = 0;
+    popupCallback_threshquest(handle(1),event);
 else
-    popupCallback_threshquest(handle(1),event)
+    popupCallback_threshquest(handle(1),event);
 end
 return
 
-function popupCallback_mst(obj,event)
-handle = findobj('Tag', 'binarize');
-if handle(1).Value==1
-    handle(1).Value=0;
-end
+function popupCallback_binarize(obj,event)
+handle = findobj('Tag', 'plus_minus');
+handle(1).Value = 0;
 return

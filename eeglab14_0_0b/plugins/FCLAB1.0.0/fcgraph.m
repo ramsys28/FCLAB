@@ -54,17 +54,15 @@ if(inEEG.FC.graph_prop.plus_minus)
              end
          end   
     end
-    
 else % no plus minus
     %just a check
     if((inEEG.FC.graph_prop.threshold==1) && isempty(inEEG.FC.graph_prop.absthr) && isempty(inEEG.FC.graph_prop.propthr))
-        error('No Value for Threshold')
-        return;
+        error('No Value for Threshold'); return;
     end
     
-    if(inEEG.FC.graph_prop.threshold==1)
+    if (inEEG.FC.graph_prop.threshold==1)
         % Absolute threshold
-        if(~isempty(inEEG.FC.graph_prop.absthr))
+        if (~isempty(inEEG.FC.graph_prop.absthr))
             if (inEEG.FC.graph_prop.binarize==0)
                 if (inEEG.FC.graph_prop.symmetrize==0)
                     for i=1:length(bands)
@@ -122,10 +120,10 @@ else % no plus minus
                         A(A~=0)=1;
                         eval(['inEEG.FC.' metric '.' bands{i} '.bin_absthr_'...
                             strrep(inEEG.FC.graph_prop.absthr,'.','_') '=A;']);
-
-                        eval(['inEEG.FC.' metric '.' bands{i} '.bin_absthr_'...
+                        
+                        eval(['[inEEG.FC.' metric '.' bands{i} '.bin_absthr_'...
                             strrep(inEEG.FC.graph_prop.absthr,'.','_')...
-                            '_GP=fclab_graphproperties(inEEG.FC.' metric '.' bands{i} '.bin_absthr_'...
+                            '_GP]=fclab_graphproperties(inEEG.FC.' metric '.' bands{i} '.bin_absthr_'...
                             strrep(inEEG.FC.graph_prop.absthr,'.','_') ', bands{i});']);
                         clear A;
                         
