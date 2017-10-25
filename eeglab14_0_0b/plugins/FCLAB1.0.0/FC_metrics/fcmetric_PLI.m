@@ -4,19 +4,17 @@ function outEEG = fcmetric_PLI(inEEG)
 %
 %   >>  outEEG = fcmetric_PLI(inEEG);
 %
-% Inputs:
+% Input(s):
 %           inEEG   - input EEG dataset
-%   
 %    
-% Outputs:
-%           outEEG  - output dataset
+% Output(s):
+%           outEEG  - output EEG dataset
 %
 % Info:
 %           Computes the phase lag index proposed by Stam et al., 2007 for 
 %           each possible pair of EEG channels and for every band as well.
 %
 % Mathematical background:
-%
 %           According to Stam et al., 2007 PLI is defined in a complete 
 %           mathematical formula as:
 %
@@ -36,7 +34,6 @@ function outEEG = fcmetric_PLI(inEEG)
 %                   transformed version of signal x2(t).
 %
 % Fundamental basis:
-%
 %               The PLI ranges between 0 and 1. 
 %               A PLI of zero indicates either no coupling or coupling with 
 %               a phase difference centered around 0 mod p. A PLI of 1 
@@ -45,7 +42,6 @@ function outEEG = fcmetric_PLI(inEEG)
 %               the larger PLI will be.
 %           
 % Important notes:
-%
 %               the sinus in (1) is used in order to convert the phases on 
 %               the interval (0, 2pi] instead of (-pi, pi],
 %
@@ -54,6 +50,11 @@ function outEEG = fcmetric_PLI(inEEG)
 %               symmetric then the two signals originate from the same
 %               source. The same happens when the mean Df is equal to or 
 %               centered around 0 mod pi.
+%
+% Reference(s): Stam C. J., Nolte G., and Daffertshofer A (2007). Phase lag 
+% index: assessment of functional connectivity from multi channel EEG and 
+% MEG with diminished bias from common sources. Hum. Brain Mapp. 28(3),
+% 1178-1193.            
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

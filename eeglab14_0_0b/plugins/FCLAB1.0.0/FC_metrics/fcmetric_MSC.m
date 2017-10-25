@@ -4,20 +4,35 @@ function outEEG = fcmetric_MSC(inEEG)
 %
 %   >>  outEEG = fcmetric_MSC(inEEG);
 %
-% Inputs:
-%           inEEG  - input EEG dataset
-%   
+% Input(s):
+%           inEEG   - input EEG dataset
 %    
-% Outputs:
-%           outEEG  - output dataset
+% Output(s):
+%           outEEG  - output EEG dataset
 %
 % Info:
-%           Computes the magnitude square coherence for each possible pair 
+%           Computes the magnitude squared coherence for each possible pair 
 %           of EEG channels and for every band as well.
 %
 % Mathematical background:
+%           For two signals, assume x, y, the magnitude squared coherence 
+%           at frequency f, |R(f)|^2, can be defined as follows:
 %
+%                   |R(f)|^2 = (|C(f)|^2)/[(C_xx(f)*C_yy(f))]
 %
+%           where C(f) is the cross-spectrum of signals x, y at f, and C_xx, 
+%           C_yy are the power spectra of x and y, respectively, at the same 
+%           frequency.
+%
+% Fundamental basis:
+%           The coherence values vary on the interval [0, 1], where 1 
+%           indicates a perfect linear prediction of y from x.
+%
+% Reference(s):
+%           Rosenberg J.R., Amjad A.M., Breeze P., Brilinger  D.R., and D.
+%           M. Halliday (1989). The Fourier approach to the identification 
+%           offunctional coupling between neuronal spike trains. Prog.
+%           Biophys. molec. Biol., 53, 1-31.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

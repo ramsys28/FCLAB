@@ -4,12 +4,11 @@ function outEEG = fcmetric_correlation(inEEG)
 %
 %   >>  outEEG = fcmetric_correlation(inEEG);
 %
-% Inputs:
+% Input(s):
 %           inEEG  - input EEG dataset
 %   
-%    
 % Outputs:
-%           outEEG  - output dataset
+%           outEEG  - output EEG dataset
 %
 % Info:
 %           Computes Pearson's temporal correlation coefficient for each 

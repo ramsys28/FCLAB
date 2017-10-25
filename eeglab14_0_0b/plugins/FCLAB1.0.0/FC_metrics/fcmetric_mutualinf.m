@@ -7,17 +7,26 @@ function outEEG = fcmetric_mutualinf(inEEG)
 % Inputs:
 %           inEEG   - input EEG dataset
 %   
-%    
 % Outputs:
-%           outEEG  - output dataset
+%           outEEG  - output EEG dataset
 %
 % Info:
 %           Computes the mutual information for each possible pair of EEG 
 %           channels and for every band as well.
 %
 % Mathematical background:
+%           Mutual information quantifies the mutual dependence between two 
+%           random variables, assume x and y. It can be defined as:
+%       
+%                           I = ?[p(x,y)*log(p(x,y)/p(x)*p(y))]
 %
+%           where p(x,y) is the joint probability function between x and y, 
+%           and p(x), p(y) are the marginal probability distribution 
+%           functions of x and y, respectively. 
 %
+% Fundamental basis:
+%           Mutual information varies between 0 and 1 where 1 denotes a 
+%           complete dependence between the two variables and 0 otherwise.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
