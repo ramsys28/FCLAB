@@ -105,104 +105,90 @@ if nargin < 3
            'pophelp(''pop_fclab'');', 'Functional Connectivity Lab');
 else
     error('Too many inputs');
-end;
+end
 
-inEEG.FC.parameters.metric=strrep(metrics_file(structout.metric).name,'.m','');
+map = (length(metrics_file):-1:1);
+structout.metric = map(structout.metric);
 
+inEEG.FC.parameters.metric = strrep(metrics_file(structout.metric).name,'.m','');
 
+if (structout.metric_all == 1)
+   inEEG.FC.parameters.metric = 'all';
+end
 
-
-if structout.metric_all==1
-   inEEG.FC.parameters.metric='all';
-end;
-
-
-fields=fieldnames(structout);
-k=1;
+fields = fieldnames(structout);
+k = 1;
 if prod([isempty(structout.frb1),isempty(structout.frb2),isempty(structout.frb3),...
-        isempty(structout.frb4),isempty(structout.frb5),isempty(structout.frb6),...
+         isempty(structout.frb4),isempty(structout.frb5),isempty(structout.frb6),...
          isempty(structout.frb7),isempty(structout.frb8),isempty(structout.frb9)])
     error('Please fill a specific bandwidth or click to Auto Complete');
 else
-    inEEG.FC.parameters.bands=[];
-    for i=4:2:20
+    inEEG.FC.parameters.bands = [];
+    for i = 4:2:20
         if ~isempty(getfield(structout,fields{i}))
-            inEEG.FC.parameters.bands{k,1}=getfield(structout,fields{i});
-            inEEG.FC.parameters.bands{k,2}=getfield(structout,fields{i+1});
-            k=k+1;
+            inEEG.FC.parameters.bands{k,1} = getfield(structout,fields{i});
+            inEEG.FC.parameters.bands{k,2} = getfield(structout,fields{i+1});
+            k = k+1;
         end
     end
 end
 
-
 [outEEG, com] = fclab(inEEG);
-
-    
-
-
 
 % return the string command
 % -------------------------
 com = sprintf('pop_fclab( %s);', inputname(1));
 
-
-
-
-
-return;
+return
 
 % callback for the drop-down menu
 function popupCallback_drp(obj,event)
     if ((obj.Value==3) || (obj.Value==5))
-       %  handle = findobj('Tag', 'frb9');
-       % handle.Visible='off';
-       msgbox('Plase note that this similarity measure might be influenced by volume conduction!', 'Notification', 'warn');
+        msgbox('Plase note that this similarity measure might be influenced by volume conduction!', 'Notification', 'warn');
     end
-return;
+return
 
 function popupCallback_all(obj,event)
-   
-
-    if obj.Value==1
-         handle = findobj('Tag', 'metric');
-         set(handle,'Visible','Off')
+    if (obj.Value == 1) 
+        handle = findobj('Tag', 'metric');
+        set(handle,'Visible','Off')
     else
         handle = findobj('Tag', 'metric');
         set(handle,'Visible','On')
     end
-return;
+return
 
 
 function popupCallback_autocmpl(obj,event)
-    if obj.Value==1
-         set(findobj('Tag', 'frb1'),'String','[0.5 4]')
-         set(findobj('Tag', 'frb1_name'),'String','Delta')
-         set(findobj('Tag', 'frb2'),'String','[4 8]')
-         set(findobj('Tag', 'frb2_name'),'String','Theta')
-         set(findobj('Tag', 'frb3'),'String','[8 10]')
-         set(findobj('Tag', 'frb3_name'),'String','Alpha1')
-         set(findobj('Tag', 'frb4'),'String','[10 12]')
-         set(findobj('Tag', 'frb4_name'),'String','Alpha2')
-         set(findobj('Tag', 'frb5'),'String','[13 30]')
-         set(findobj('Tag', 'frb5_name'),'String','Beta')
-         set(findobj('Tag', 'frb6'),'String','[30 45]')
-         set(findobj('Tag', 'frb6_name'),'String','Gamma')
-         set(findobj('Tag', 'frb7'),'String','[0.5 45]')
-         set(findobj('Tag', 'frb7_name'),'String','All Spectrum')
+    if (obj.Value == 1)
+         set(findobj('Tag', 'frb1'),'String','[0.5 4]');
+         set(findobj('Tag', 'frb1_name'),'String','Delta');
+         set(findobj('Tag', 'frb2'),'String','[4 8]');
+         set(findobj('Tag', 'frb2_name'),'String','Theta');
+         set(findobj('Tag', 'frb3'),'String','[8 10]');
+         set(findobj('Tag', 'frb3_name'),'String','Alpha1');
+         set(findobj('Tag', 'frb4'),'String','[10 12]');
+         set(findobj('Tag', 'frb4_name'),'String','Alpha2');
+         set(findobj('Tag', 'frb5'),'String','[13 30]');
+         set(findobj('Tag', 'frb5_name'),'String','Beta');
+         set(findobj('Tag', 'frb6'),'String','[30 45]');
+         set(findobj('Tag', 'frb6_name'),'String','Gamma');
+         set(findobj('Tag', 'frb7'),'String','[0.5 45]');
+         set(findobj('Tag', 'frb7_name'),'String','All Spectrum');
     else
-         set(findobj('Tag', 'frb1'),'String',' ')
-         set(findobj('Tag', 'frb1_name'),'String',' ')
-         set(findobj('Tag', 'frb2'),'String',' ')
-         set(findobj('Tag', 'frb2_name'),'String',' ')
-         set(findobj('Tag', 'frb3'),'String',' ')
-         set(findobj('Tag', 'frb3_name'),'String',' ')
-         set(findobj('Tag', 'frb4'),'String',' ')
-         set(findobj('Tag', 'frb4_name'),'String',' ')
-         set(findobj('Tag', 'frb5'),'String',' ')
-         set(findobj('Tag', 'frb5_name'),'String',' ')
-         set(findobj('Tag', 'frb6'),'String',' ')
-         set(findobj('Tag', 'frb6_name'),'String',' ')
-         set(findobj('Tag', 'frb7'),'String',' ')
-         set(findobj('Tag', 'frb7_name'),'String',' ')
+         set(findobj('Tag', 'frb1'),'String',' ');
+         set(findobj('Tag', 'frb1_name'),'String',' ');
+         set(findobj('Tag', 'frb2'),'String',' ');
+         set(findobj('Tag', 'frb2_name'),'String',' ');
+         set(findobj('Tag', 'frb3'),'String',' ');
+         set(findobj('Tag', 'frb3_name'),'String',' ');
+         set(findobj('Tag', 'frb4'),'String',' ');
+         set(findobj('Tag', 'frb4_name'),'String',' ');
+         set(findobj('Tag', 'frb5'),'String',' ');
+         set(findobj('Tag', 'frb5_name'),'String',' ');
+         set(findobj('Tag', 'frb6'),'String',' ');
+         set(findobj('Tag', 'frb6_name'),'String',' ');
+         set(findobj('Tag', 'frb7'),'String',' ');
+         set(findobj('Tag', 'frb7_name'),'String',' ');
     end
-return;
+return

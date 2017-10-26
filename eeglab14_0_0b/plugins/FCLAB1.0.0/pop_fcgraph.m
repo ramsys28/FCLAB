@@ -41,7 +41,15 @@ function [outEEG, com] = pop_fcgraph(inEEG)
 com = ''; % this initialization ensure that the function will return something
           % if the user press the cancel button            
 
-temEEG.FC = rmfield(inEEG.FC,{'parameters', 'graph_prop'});
+temEEG = inEEG;
+if(isfield(temEEG.FC, 'parameters'))
+    temEEG.FC = rmfield(temEEG.FC, {'parameters'});
+end
+
+if(isfield(temEEG.FC, 'graph_prop'))
+    temEEG.FC = rmfield(temEEG.FC, {'graph_prop'});
+end
+
 matrices = fieldnames(temEEG.FC);
 clear temEEG;
 
@@ -67,7 +75,7 @@ if nargin < 3
        
        inEEG.FC.graph_prop=structout;
        clear inEEG.FC.graph_prop.metric
-       inEEG.FC.graph_prop.metric=matrices{structout.metric};
+       inEEG.FC.graph_prop.metric = matrices{structout.metric};
        
        outEEG = fcgraph(inEEG);
 else

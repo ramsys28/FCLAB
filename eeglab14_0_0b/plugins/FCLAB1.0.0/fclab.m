@@ -33,10 +33,10 @@
 
 function [outEEG, com] = fclab(inEEG)
 if nargin < 1
-    error('FCLAB:Need parameters');
+    error('FCLAB: Need parameters');
 	return;
 end
-outEEG=inEEG;
+outEEG = inEEG;
 fclab_dependences(); % check for dependences and download.
 
 if ~strcmp(inEEG.FC.parameters.metric, 'all')
@@ -48,9 +48,8 @@ else
     
     for i=1:3
         eval(['inEEG=' strrep(metrics_file(i).name,'.m','') '(inEEG);']);
-    end;
+    end
 end
-
 
 disp('>> FCLAB: Done!');
 
