@@ -64,6 +64,7 @@ handles.popupmenu6.UserData=a;
 handles.pushbutton1.UserData=a;
 handles.pushbutton2.UserData=a;
 handles.pushbutton3.UserData=a;
+handles.flag_init = 0;
 % Choose default command line output for pop_fcvisual
 
 % colormaps -- start
@@ -376,6 +377,7 @@ fieldname = handles.popupmenu1.String{handles.popupmenu1.Value}; %retrieve simil
 fieldname_freqband = handles.popupmenu2.String{handles.popupmenu2.Value}; %retrieve band
 adj_matrix = hObject.String{hObject.Value}; %retrieve adjacency matrix
 handles.popupmenu3.String = fieldnames(hObject.UserData.FC.(fieldname).(fieldname_freqband).(adj_matrix).local);
+handles.popupmenu3.Value = 1;
 local_measure = handles.popupmenu3.String{handles.popupmenu3.Value}; %retrieve local measure name
 local_measure_data = hObject.UserData.FC.(fieldname).(fieldname_freqband).(adj_matrix).local.(local_measure); %retrieve local measure data
 
