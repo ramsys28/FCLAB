@@ -1,4 +1,3 @@
-
 % pop_fclab() - Functional Connectivity Lab for EEGLAB  
 %
 % Usage:
@@ -41,7 +40,21 @@ function [outEEG, com] = pop_fcgraph(inEEG)
 com = ''; % this initialization ensure that the function will return something
           % if the user press the cancel button            
 
+if(isfield(inEEG, 'FC') == 0)
+    error('Run a graph analysis first!'); return;
+end
+          
 temEEG = inEEG;
+
+%maintain only those fields that are related to the fcmetrics
+eeglab_path = which('eeglab');
+eeglab_path = strrep(eeglab_path,'eeglab.m','');
+metrics_file = dir([eeglab_path 'plugins/FCLAB1.0.0/FC_metrics/fcmetric_*.m']);
+for i = 1:length(metrics_file)
+    measure_full = metrics_file(i,:).name;
+    fcmetrics{i} = measure_full(10:end-2);
+end
+
 if(isfield(temEEG.FC, 'parameters'))
     temEEG.FC = rmfield(temEEG.FC, {'parameters'});
 end
@@ -51,6 +64,23 @@ if(isfield(temEEG.FC, 'graph_prop'))
 end
 
 matrices = fieldnames(temEEG.FC);
+
+%clear any past graph analysis results
+metrics = intersect(fields(inEEG.FC), fcmetrics);
+bands = fieldnames(inEEG.FC.(metrics{1}));
+GP_fields = fieldnames(inEEG.FC.(metrics{1}).(bands{1}));
+previous_GP_fields_indx = find(~strcmp(GP_fields, 'adj_matrix'));
+previous_GP_fields = GP_fields(previous_GP_fields_indx);
+
+for i = 1:length(metrics)
+    for j = 1:length(bands)
+        for k = 1:length(previous_GP_fields)
+            inEEG.FC.(metrics{i}).(bands{j}) = rmfield(inEEG.FC.(metrics{i}).(bands{j}), previous_GP_fields{k});
+        end
+    end
+end
+%end
+
 clear temEEG;
 
 if nargin < 3

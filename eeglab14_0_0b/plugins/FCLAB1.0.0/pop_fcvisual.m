@@ -90,7 +90,7 @@ end
 fieldnames = intersect(fields(a.FC), fcmetrics);
 
 if isempty(fieldnames)
-    error('FCLAB: Compute first a connectivity matrix')
+    error('FCLAB: Compute first a connectivity matrix'); return;
 else
     handles.popupmenu2.String=fieldnames;
     fieldnames_freq=fields(a.FC.(fieldnames{1}));
@@ -155,10 +155,9 @@ else
         set(gca, 'CLim', [handles.slider1.Min handles.slider1.Max]);
         handles.UserData=a;
     else
-        %%error need channels for topoplot
-    end;
-     
-end;
+        error('fcvisual: need channels for topoplot!'); return;
+    end  
+end
 
 % Update handles structure
 guidata(hObject, handles);
@@ -169,7 +168,7 @@ guidata(hObject, handles);
 %imagesc(double(G)); colormap(jet); colorbar;
 
 % UIWAIT makes pop_fcvisual wait for user response (see UIRESUME)
- uiwait(handles.figure1);
+%  uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.

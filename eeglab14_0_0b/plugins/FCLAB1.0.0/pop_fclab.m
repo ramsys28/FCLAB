@@ -46,19 +46,30 @@ typeproc=1;
 % pop up window
 % -------------
 
-% PREPEI NA EXETASOUME POIES METRIKES EINAI DIATHESIMES
-% FOR EXAMPLE
 eeglab_path = which('eeglab');
 eeglab_path = strrep(eeglab_path,'eeglab.m','');
 metrics_file = dir([eeglab_path 'plugins/FCLAB1.0.0/FC_metrics/fcmetric_*.m']);
 metrics = [];
 for i = length(metrics_file):-1:1
+     fcmetrics(i,1)={strrep(strrep(metrics_file(i).name,'fcmetric_',''),'.m','')};
      metrics=strcat(metrics, strrep(strrep(metrics_file(i).name,'fcmetric_',''),'.m',''));
      metrics=strcat(metrics,'|');
 end
 metrics = metrics(1:end-1);
 
-% fieldnames(strcmp(fieldnames,'parameters'))=[];
+%clear any past connectivity or/and graph analysis results
+if(isfield(inEEG, 'FC'))
+    existing_metric = intersect(fieldnames(inEEG.FC), fcmetrics);    
+    inEEG.FC = rmfield(inEEG.FC, existing_metric);
+    
+    if(isfield(inEEG, 'parameters'))
+        inEEG.FC = rmfield(inEEG.FC, 'parameters');
+    end
+    
+    if(isfield(inEEG, 'graph_prop'))
+        inEEG.FC = rmfield(inEEG.FC, 'graph_prop');
+    end
+end
 
 if nargin < 3
     g = [1 1 1];

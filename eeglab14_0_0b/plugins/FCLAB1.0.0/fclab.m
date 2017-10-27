@@ -33,11 +33,10 @@
 
 function [outEEG, com] = fclab(inEEG)
 if nargin < 1
-    error('FCLAB: Need parameters');
-	return;
+    error('fclab: Need parameters!'); return;
 end
 outEEG = inEEG;
-fclab_dependences(); % check for dependences and download.
+fclab_dependences(); % check for dependences and download if necessary
 
 if ~strcmp(inEEG.FC.parameters.metric, 'all')
    eval(['outEEG=' inEEG.FC.parameters.metric '(inEEG);']);
@@ -46,14 +45,14 @@ else
     eeglab_path = strrep(eeglab_path,'eeglab.m','');
     metrics_file = dir([eeglab_path 'plugins/FCLAB1.0.0/FC_metrics/fcmetric_*.m']);
     
-    for i=1:3
+    for i = 1:5
         eval(['inEEG=' strrep(metrics_file(i).name,'.m','') '(inEEG);']);
     end
 end
 
-disp('>> FCLAB: Done!');
+disp('fclab: Done!');
 
 %% Print executed command
 com = sprintf('fclab( %s, %s );', inputname(1), 'params');
 
-return;
+return

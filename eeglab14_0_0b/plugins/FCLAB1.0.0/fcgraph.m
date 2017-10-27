@@ -1,6 +1,6 @@
-function outEEG=fcgraph(inEEG)
-metric=inEEG.FC.graph_prop.metric;
-disp('>> FCLAB: Computing graph theoretical parameters')
+function outEEG = fcgraph(inEEG)
+metric = inEEG.FC.graph_prop.metric;
+disp('>> FCLAB: Computing graph theoretical parameters');
 eval(['bands=fieldnames(inEEG.FC.' metric ');']);
 
 if(inEEG.FC.graph_prop.plus_minus)
@@ -38,8 +38,7 @@ if(inEEG.FC.graph_prop.plus_minus)
              eval(['inEEG.FC.' metric '.' bands{i} '.adj_matrix_plus_sym_GP=fclab_graphproperties(inEEG.FC.'...
              metric '.' bands{i} '.adj_matrix_plus_sym, bands{i});']);
          
-            
-            eval(['inEEG.FC.' metric '.' bands{i} '.adj_matrix_minus_sym_GP=fclab_graphproperties(inEEG.FC.'...
+             eval(['inEEG.FC.' metric '.' bands{i} '.adj_matrix_minus_sym_GP=fclab_graphproperties(inEEG.FC.'...
              metric '.' bands{i} '.adj_matrix_minus_sym, bands{i});']);
          
              if(inEEG.FC.graph_prop.mst)
@@ -60,12 +59,11 @@ else % no plus minus
         error('No Value for Threshold'); return;
     end
     
-    if (inEEG.FC.graph_prop.threshold==1)
-        % Absolute threshold
-        if (~isempty(inEEG.FC.graph_prop.absthr))
-            if (inEEG.FC.graph_prop.binarize==0)
-                if (inEEG.FC.graph_prop.symmetrize==0)
-                    for i=1:length(bands)
+    if (inEEG.FC.graph_prop.threshold==1) % threshold
+        if (~isempty(inEEG.FC.graph_prop.absthr))%abs threshold yes
+            if (inEEG.FC.graph_prop.binarize==0) %binarize no
+                if (inEEG.FC.graph_prop.symmetrize==0) %symmetrize no
+                    for i = 1:length(bands)
                         eval(['inEEG.FC.' metric '.' bands{i} '.absthr_'...
                             strrep(inEEG.FC.graph_prop.absthr,'.','_')...
                             '=threshold_absolute(inEEG.FC.' metric '.' bands{i}...
@@ -75,7 +73,7 @@ else % no plus minus
                             strrep(inEEG.FC.graph_prop.absthr,'.','_')...
                             '_GP=fclab_graphproperties(inEEG.FC.' metric '.' bands{i} '.absthr_'...
                             strrep(inEEG.FC.graph_prop.absthr,'.','_') ', bands{i});']);
-
+                        
                         if(inEEG.FC.graph_prop.mst)
                             eval(['[inEEG.FC.' metric '.' bands{i}...
                              '.absthr_'...
@@ -88,7 +86,7 @@ else % no plus minus
                             strrep(inEEG.FC.graph_prop.absthr,'.','_') ', bands{i});']);
                         end
                     end
-                else %abs threshold binarize no symmetrize yes
+                else %abs threshold yes, binarize no, symmetrize yes
                     for i=1:length(bands)
                         eval(['inEEG.FC.' metric '.' bands{i} '.absthr_'...
                                 strrep(inEEG.FC.graph_prop.absthr,'.','_') '_sym=symmetrize(inEEG.FC.' metric '.' bands{i} '.absthr_'...
@@ -112,8 +110,8 @@ else % no plus minus
                             end
                     end
                 end
-            else % binary
-                if (inEEG.FC.graph_prop.symmetrize==0)
+            else %binarize
+                if (inEEG.FC.graph_prop.symmetrize==0) %abs threshold yes, binarize yes, symmetrize no
                     for i=1:length(bands)
                         eval(['A=threshold_absolute(inEEG.FC.' metric '.' bands{i} ...
                             '.adj_matrix,' inEEG.FC.graph_prop.absthr ');']);
@@ -139,7 +137,7 @@ else % no plus minus
                                 strrep(inEEG.FC.graph_prop.absthr,'.','_') ', bands{i});']);
                         end
                     end
-                else % binary symmetric
+                else  %abs threshold yes, binarize yes, symmetrize yes
                     for i=1:length(bands)
                         eval(['A=threshold_absolute(inEEG.FC.' metric '.' bands{i} ...
                             '.adj_matrix,' inEEG.FC.graph_prop.absthr ');']);
@@ -169,9 +167,9 @@ else % no plus minus
             end
         end
         
-        if(~isempty(inEEG.FC.graph_prop.propthr))
+        if(~isempty(inEEG.FC.graph_prop.propthr)) % Proportional threshold
                 if (inEEG.FC.graph_prop.binarize==0)
-                    if (inEEG.FC.graph_prop.symmetrize==0)
+                    if (inEEG.FC.graph_prop.symmetrize==0) %prop threshold yes, binarize no, symmetrize no
                         for i=1:length(bands)
                         
                             eval(['inEEG.FC.' metric '.' bands{i} '.propthr_'...
@@ -200,7 +198,7 @@ else % no plus minus
                         
                         end
                     
-                    else %prop threshold binarize no symmetrize yes
+                    else %prop threshold yes, binarize no, symmetrize yes
                         for i=1:length(bands)
                         
                             eval(['inEEG.FC.' metric '.' bands{i} '.propthr_'...
@@ -232,7 +230,7 @@ else % no plus minus
                     end
                 
                 else % binary
-                   if (inEEG.FC.graph_prop.symmetrize==0)
+                   if (inEEG.FC.graph_prop.symmetrize==0) %prop threshold yes, binarize yes, symmetrize no
                     for i=1:length(bands)
                         eval(['A=threshold_proportional(inEEG.FC.' metric '.' bands{i} ...
                             '.adj_matrix,' num2str(str2num(inEEG.FC.graph_prop.propthr)/100) ');']);
@@ -253,11 +251,10 @@ else % no plus minus
                                     inEEG.FC.graph_prop.propthr...
                                     '_MST_GP]=fclab_MST(inEEG.FC.'...
                                      metric '.' bands{i} '.bin_propthr_'...
-                                    inEEG.FC.graph_prop.propthr ', bands{i});']);   
+                                    inEEG.FC.graph_prop.propthr ', bands{i});']);
                         end
                     end
-                    
-                   else %prop threshold binarize yes symmetrize yes
+                   else %prop threshold yes, binarize yes, symmetrize yes
                     for i=1:length(bands)
                         eval(['A=threshold_proportional(inEEG.FC.' metric '.' bands{i} ...
                             '.adj_matrix,' num2str(str2num(inEEG.FC.graph_prop.propthr)/100) ');']);
@@ -281,17 +278,13 @@ else % no plus minus
                                      metric '.' bands{i} '.bin_propthr_'...
                                     inEEG.FC.graph_prop.propthr '_sym, bands{i});']);   
                         end
-                    end
-
-                    
+                    end 
                    end
                 end   
         end
     else % no thresholding
-        if (inEEG.FC.graph_prop.binarize==0)
-                    
-            if (inEEG.FC.graph_prop.symmetrize==1)
-                         
+        if (inEEG.FC.graph_prop.binarize==0)        
+            if (inEEG.FC.graph_prop.symmetrize==1)         
                 for i=1:length(bands)
                             eval(['inEEG.FC.' metric '.' bands{i} ...
                                 '.adj_matrix_sym=symmetrize(inEEG.FC.' metric '.' bands{i} ...
@@ -314,7 +307,6 @@ else % no plus minus
                 end
                 
             else
-                
                 for i=1:length(bands)
                             eval(['inEEG.FC.' metric '.' bands{i} ...
                                 '.adj_matrix_GP=fclab_graphproperties(inEEG.FC.'...
@@ -327,20 +319,13 @@ else % no plus minus
                                          '.adj_matrix_MST, inEEG.FC.' metric '.' bands{i}...
                                          '.adj_matrix_MST_GP]=fclab_MST(inEEG.FC.'...
                                          metric '.' bands{i} '.adj_matrix, bands{i});']);   
-                            end
-                            
-                end
-                
-            end
-            
-            
+                            end       
+                end 
+            end    
         else
-            error('FCLAB>>Cannot Binarize Without Threshold');
-            return;
+            error('FCLAB>>Cannot Binarize Without Threshold'); return;
         end
     end
-    
 end
-outEEG=inEEG;
 
-
+outEEG = inEEG;

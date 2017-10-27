@@ -16,20 +16,21 @@ struct = [];
 
 tic;
 if(weighted && ~directed) %weighted & undirected
+    disp('fclab_graphproperties: Weighted and undirected graph analysis');
     struct = wu(W);
 elseif(~weighted && ~directed) %binary & undirected
+    disp('fclab_graphproperties: Binary and undirected graph analysis');
     struct = bu(W);
 end
 timer = toc;
 
-disp(['>> fclab_graphproperties: Elapsed time for ', band_ID, ' band = ', num2str(timer), ' sec']);
+disp(['fclab_graphproperties: Elapsed time for ', band_ID, ' band = ', num2str(timer), ' sec']);
 
 return
 
 
 function s = wu(C)
 s.global.assortativity=assortativity_wei(C,0);
-% s.length_matrix = weight_conversion(C, 'lengths');
 
 A = C;
 B = C > 0;
@@ -46,8 +47,8 @@ s.global.DEN = density_und(C);
 s.edge.EBC = edge_betweenness_wei(C);
 s.local.LE = real(efficiency_wei(C,1));
 s.local.EVC = eigenvector_centrality_und(C);
-[s.edge.Erange,s.global.eta,s.edge.Eshort,s.global.fs] = erange(C); %%%%%%%%%%%%Attention
-[s.wlaks.Wq,s.wlaks.twalk,s.wlaks.wlq] = findwalks(C); %%%%%%%%%%%%Attention
+% [s.edge.Erange,s.global.eta,s.edge.Eshort,s.global.fs] = erange(C); %%%%%%%%%%%%Attention
+% [s.wlaks.Wq,s.wlaks.twalk,s.wlaks.wlq] = findwalks(C); %%%%%%%%%%%%Attention
 [s.edge.JointDeg,s.global.J_od,s.global.J_id,s.global.J_bl] = jdegree(C);
 [s.local.loc_assort_pos,s.local.loc_assort_neg] = local_assortativity_wu_sign(C);
 s.local.STR = strengths_und(C);
@@ -70,4 +71,4 @@ s.local.EVC = eigenvector_centrality_und(C);
 [s.edge.JointDeg,s.global.J_od,s.global.J_id,s.global.J_bl] = jdegree(C);
 % [s.local.loc_assort_pos,s.local.loc_assort_neg] = local_assortativity_wu_sign(C);
 s.local.STR = strengths_und(C);
-return;
+return

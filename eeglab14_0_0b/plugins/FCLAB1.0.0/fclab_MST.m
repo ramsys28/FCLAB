@@ -16,7 +16,7 @@ function [MST_net, MST_params]=fclab_MST(Matrix, band_ID)
 Matrix = double(Matrix);
 n = size(Matrix, 2);
 
-disp('>> fclab_MST: Automatically ignoring negative weights (if not already discarded)...');
+disp('fclab_MST: Automatically ignoring negative weights (if not already discarded)...');
 Matrix(Matrix<0) = 0; %retain only positive values (for sure)
 
 tic;
@@ -43,7 +43,7 @@ MST_params.global.Th_MST = treeHierarchy(MST_params.global.leaves_MST, n-1, max(
 MST_params.global.DEGcor_MST = pearson(MST_net.Kruskal);
 MST_params.global.kappa_MST = kappa(MST_params.local.DEG_MST);
 timer = toc;
-disp(['>> fclab_MST: Elapsed time for ', band_ID, ' band = ', num2str(timer), ' sec']);
+disp(['fclab_MST: Elapsed time for ', band_ID, ' band = ', num2str(timer), ' sec']);
 disp(' ');
 
 return;
