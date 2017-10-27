@@ -46,7 +46,7 @@ k=1;
 for i=1:mf
     top_freqs(k)=max(str2num(inEEG.FC.parameters.bands{i,1}));
     k=k+1;
-end;
+end
 max_freq=max(top_freqs)+1;
 
 if length(size(inEEG.data))==2
@@ -54,13 +54,12 @@ if length(size(inEEG.data))==2
     [cs,coh,nave]=data2cs_event(inEEG.data',inEEG.srate,round(inEEG.srate/2),max(size(inEEG.data)),max_freq,para);
 else
     [cs,coh,nave]=data2cs_event(inEEG.data',inEEG.srate,round(inEEG.srate/2),max(size(inEEG.data)),max_freq);
-end;
+end
 
 for i = 1:mf
-
-eval(['outEEG.FC.iCOH.'...
+    disp('Mphke..');
+        eval(['outEEG.FC.iCOH.'...
              strrep(inEEG.FC.parameters.bands{i,2},' ','_') ...
-             '.adj_matrix=imag(mean(coh(:,:,' int2str(round(min(str2num(inEEG.FC.parameters.bands{i,1})))) ':'...
-             int2str(max(str2num(inEEG.FC.parameters.bands{i,1}))) '),3));']);
-
+             '.adj_matrix=abs(imag(mean(coh(:,:,' int2str(round(min(str2num(inEEG.FC.parameters.bands{i,1})))) ':'...
+             int2str(max(str2num(inEEG.FC.parameters.bands{i,1}))) '),3)));']);
 end

@@ -61,11 +61,12 @@ function outEEG = fcmetric_PLI(inEEG)
 mf = size(inEEG.FC.parameters.bands, 1);
 [m, ~, o] = size(inEEG.data);
 outEEG = inEEG;
-temp_adj = zeros(m, m);
+
 disp('>> FCLAB: PLI is being computed...');
 
 for i = 1:mf
     testEEG = inEEG;
+    temp_adj = zeros(m, m);
     freq_range = str2num(inEEG.FC.parameters.bands{i,1});
     [testEEG, ~, ~] = pop_eegfiltnew(testEEG, freq_range(1));
     [testEEG, ~, ~] = pop_eegfiltnew(testEEG, [], freq_range(2));
@@ -87,4 +88,4 @@ for i = 1:mf
     temp_adj = temp_adj + triu(temp_adj)';
     
     eval(['outEEG.FC.PLI.' strrep(inEEG.FC.parameters.bands{i,2},' ','_') '.adj_matrix = temp_adj;']);
-end;
+end
