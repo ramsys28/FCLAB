@@ -219,8 +219,22 @@ colormap(gcf, eval(['fccolor_'...
     handles.popupmenu1.String{handles.popupmenu1.Value} '(64);']));
 
 aa=hObject.UserData.FC.(handles.popupmenu2.String{handles.popupmenu2.Value}).(handles.popupmenu3.String{handles.popupmenu3.Value}).adj_matrix;
-aa(aa<handles.slider1.Value)=0;
-    
+% aa(aa<handles.slider1.Value)=0;
+axes(handles.axes1);
+imagesc(aa);
+a=hObject.UserData;
+handles.axes1.XTick=[1:a.nbchan];
+chanlabels=[];
+for i=1:a.nbchan
+    chanlabels{i,1}=a.chanlocs(i).labels;
+end
+handles.axes1.XTickLabel=chanlabels;
+handles.axes1.XTickLabelRotation=90;
+handles.axes1.Visible='on';
+handles.axes1.YTick=handles.axes1.XTick;
+handles.axes1.YTickLabel=chanlabels;
+handles.edit1.String=num2str(handles.slider1.Value);
+
 if ~isempty(hObject.UserData.chanlocs)
     ds.chanPairs=[];
     ds.connectStrength=[];
@@ -247,8 +261,7 @@ if ~isempty(hObject.UserData.chanlocs)
     axes(handles.axes7);
     colormap(['fccolor_' handles.popupmenu1.String{handles.popupmenu1.Value} '(64)']);
     colorbar('south');
-    set(gca, 'CLim', [handles.slider1.Min handles.slider1.Max]);
-    
+    set(gca, 'CLim', [handles.slider1.Min handles.slider1.Max]); 
 end
 
 guidata(hObject, handles);

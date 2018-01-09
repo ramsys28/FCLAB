@@ -52,8 +52,8 @@ for k = length(general_folders):-1:1
     if (strcmp(fname, 'code') == 1)
         disp('>> FCLAB: MIT SE toolbox found!');
         disp('>> FCLAB: Adding to path...');
-        delete([eeglab_path 'plugins/FCLAB1.0.0/code/issymmetric.m']); %due to conflict with MATLAB's issymetric
-        addpath([eeglab_path 'plugins/FCLAB1.0.0/code']);
+        delete([eeglab_path 'plugins\FCLAB1.0.0\code\issymmetric.m']); %due to conflict with MATLAB's issymetric
+        addpath([eeglab_path 'plugins\FCLAB1.0.0\code']);
         flag_MITSE = 1;
         break;
     end

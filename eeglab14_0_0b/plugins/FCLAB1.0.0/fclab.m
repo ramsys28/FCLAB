@@ -38,6 +38,11 @@ end
 outEEG = inEEG;
 fclab_dependences(); % check for dependences and download if necessary
 
+%check for epochs and if any compute the average
+if(numel(size(inEEG.data)) > 2)
+    inEEG.data = mean(inEEG.data, 3);
+end
+
 if ~strcmp(inEEG.FC.parameters.metric, 'all')
    eval(['outEEG=' inEEG.FC.parameters.metric '(inEEG);']);
 else
