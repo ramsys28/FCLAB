@@ -43,17 +43,17 @@ if(numel(size(inEEG.data)) > 2)
     inEEG.data = mean(inEEG.data, 3);
 end
 
-if ~strcmp(inEEG.FC.parameters.metric, 'all')
+% if ~strcmp(inEEG.FC.parameters.metric, 'all')
    eval(['outEEG=' inEEG.FC.parameters.metric '(inEEG);']);
-else
-    eeglab_path = which('eeglab');
-    eeglab_path = strrep(eeglab_path,'eeglab.m','');
-    metrics_file = dir([eeglab_path 'plugins/FCLAB1.0.0/FC_metrics/fcmetric_*.m']);
-    
-    for i = 1:5
-        eval(['inEEG=' strrep(metrics_file(i).name,'.m','') '(inEEG);']);
-    end
-end
+% else
+%     eeglab_path = which('eeglab');
+%     eeglab_path = strrep(eeglab_path,'eeglab.m','');
+%     metrics_file = dir([eeglab_path 'plugins/FCLAB1.0.0/FC_metrics/fcmetric_*.m']);
+%     
+%     for i = 1:5
+%         eval(['inEEG=' strrep(metrics_file(i).name,'.m','') '(inEEG);']);
+%     end
+% end
 
 disp('fclab: Done!');
 
