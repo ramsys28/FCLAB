@@ -77,7 +77,7 @@ if nargin < 3
     uilist = { ...
       { 'Style', 'text', 'string', 'Choose Metric', 'fontweight', 'bold' } ...
       { 'Style', 'popupmenu', 'string', metrics 'tag' 'metric' 'Callback', @popupCallback_drp}...
-      { 'Style', 'text', 'string', ' ' } ...
+      { 'Style', 'text', 'string', ' '} ...
       { 'Style', 'text', 'string', 'Brainwaves', 'fontweight', 'bold'  }...
       { 'Style', 'text', 'string', 'Frequency [low high]', 'fontweight', 'bold'  }...
       { 'Style', 'text', 'string', 'Name (delta, theta)', 'fontweight', 'bold'  }...
@@ -123,9 +123,9 @@ structout.metric = map(structout.metric);
 
 inEEG.FC.parameters.metric = strrep(metrics_file(structout.metric).name,'.m','');
 
-if (structout.metric_all == 1)
-   inEEG.FC.parameters.metric = 'all';
-end
+% if (structout.metric_all == 1)
+%    inEEG.FC.parameters.metric = 'all';
+% end
 
 fields = fieldnames(structout);
 k = 1;
@@ -135,7 +135,7 @@ if prod([isempty(structout.frb1),isempty(structout.frb2),isempty(structout.frb3)
     error('Please fill a specific bandwidth or click to Auto Complete');
 else
     inEEG.FC.parameters.bands = [];
-    for i = 4:2:20
+    for i = 3:2:20
         if ~isempty(getfield(structout,fields{i}))
             inEEG.FC.parameters.bands{k,1} = getfield(structout,fields{i});
             inEEG.FC.parameters.bands{k,2} = getfield(structout,fields{i+1});
@@ -159,15 +159,15 @@ function popupCallback_drp(obj,event)
     end
 return
 
-function popupCallback_all(obj,event)
-    if (obj.Value == 1) 
-        handle = findobj('Tag', 'metric');
-        set(handle,'Visible','Off')
-    else
-        handle = findobj('Tag', 'metric');
-        set(handle,'Visible','On')
-    end
-return
+% function popupCallback_all(obj,event)
+%     if (obj.Value == 1) 
+%         handle = findobj('Tag', 'metric');
+%         set(handle,'Visible','Off')
+%     else
+%         handle = findobj('Tag', 'metric');
+%         set(handle,'Visible','On')
+%     end
+% return
 
 
 function popupCallback_autocmpl(obj,event)
