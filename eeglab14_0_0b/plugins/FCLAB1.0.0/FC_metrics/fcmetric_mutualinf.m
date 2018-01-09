@@ -37,18 +37,18 @@ warning('off',id);
 mf = size(inEEG.FC.parameters.bands, 1);
 disp('>> FCLAB: Mututal information is being computed...');
 
-for bands = 1:mf
+for band = 1:mf
     testEEG = inEEG;
-    freq_range = str2num(inEEG.FC.parameters.bands{i,1});
+    freq_range = str2num(inEEG.FC.parameters.bands{band,1});
     [testEEG, ~, ~] = pop_eegfiltnew(testEEG, freq_range(1));
     [testEEG, ~, ~] = pop_eegfiltnew(testEEG, [], freq_range(2));
-    for i = 1:inEEG.nbchan-1
-        for j = i+1:inEEG.nbchan
+    for i = 1:inEEG.nbchan
+        for j = 1:inEEG.nbchan
            Matrix(i,j) = mutualinf(inEEG.data(i,:)',inEEG.data(j,:)',inEEG.srate,freq_range(1),freq_range(2));
         end
     end
+    disp(num2str(size(Matrix,1)))
+    disp(num2str(size(Matrix,2)))
     Matrix = Matrix + Matrix';
-    eval(['outEEG.FC.mutualinf.' strrep(inEEG.FC.parameters.bands{i,2},' ','_') '.adj_matrix=Matrix;']);
+    eval(['outEEG.FC.mutualinf.' strrep(inEEG.FC.parameters.bands{band,2},' ','_') '.adj_matrix=Matrix;']);
 end
-            
-       
