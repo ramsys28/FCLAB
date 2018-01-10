@@ -1,0 +1,29 @@
+======================================== | Functional Connectivity LAB (FCLAB) plugin for EEGLAB | ========================================
+
+Authors
+Vasileios C. Pezoulas, PhD Student, University of Ioannina
+Manousos A. Klados, PhD, Lecturer in Biomedical Engineering, Aston University
+
+Supported functions
+1. Compute functional connectivity analysis on single subject EEG data
+2. Visualize functional connectivity graphs using head (and head-in-head) models
+3. Compute various graph and(or) Minimum Spanning Tree local and global parameters
+4. Visualize graph and(or) Minimum Spanning Tree parameters using charts and head models
+
+Description
+eegplugin_fclab() -> loads the FCLAB options on EEGLAB's interface
+fclab_dependences() -> downloads (if necessary) all the required packages for executing graph/MST analysis
+pop_fclab() -> loads the FCLAB environment and calls fclab()
+pop_fcvisual() -> loads the Graph visualization interface through pop_fcvisual.fig
+pop_fcgraph() -> loads the Graph analysis interface and calls fcgraph()
+pop_fcvisual_parameters -> loads the Graph/MST parameters visualization interface through pop_fcvisual_parameters.fig
+pop_fcvisual_MSTs -> loads the MST visualization interface through pop_fcvisual_MSTs.fig
+fclab() -> executes functional connectivity for the selected similarity measure and for the bands of interest
+fcgraph() -> computes various local and global parameters for different types of graphs/MSTs through fclab_graphproperties() and fclab_MST()
+fclab_graphproperties() -> computes local and global graph parameters for the bands of interest
+fclab_MST() -> computes various local and global MST parameters for the bands of interest
+
+Notes
+1. All the *.fig files were created using MATLAB's guide
+2. EEG epoch data are automatically averaged across the epochs
+3. topoplot() and topoplot_connect() are slightly modified versions of eeglab's original ones
