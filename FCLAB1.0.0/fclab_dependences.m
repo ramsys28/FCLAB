@@ -62,7 +62,8 @@ end
 %BCT doesn't exist - download from site and automatically unzip
 if(flag_BCT == 0)
     disp('>> FCLAB: BCT toolbox not found!');
-    url = 'https://sites.google.com/site/bctnet/Home/functions/BCT.zip?attredirects=0';
+    %New URL, the old one doesn't work, official URL from https://sites.google.com/site/bctnet/home
+    url = 'https://drive.google.com/u/0/uc?id=1DmMvRnferBfGe057O-sZwB5jL4j8w1Hu&export=download';
     filename = [eeglab_path 'plugins/FCLAB1.0.0/BCT.zip'];
     disp(['>> FCLAB: Downloading BCT toolbox from: ', url]);
     websave(filename, url);
